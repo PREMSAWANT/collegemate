@@ -61,26 +61,32 @@ ADMIN_PASSWORD = "Bmit@24"  # In production, use hashed password
 
 # College Information (In-memory fallback, ideally should be in DB)
 COLLEGE_INFO = {
-    "name": "CollegeMate",
-    "short_name": "CollegeMate",
-    "address": "Your College Address",
-    "phone": "+91 1234567890",
-    "email": "info@collegemate.com",
-    "website": "https://collegemate.com",
+    "name": "Brahmdevdada Mane Institute of Technology, Solapur",
+    "short_name": "BMIT Solapur",
+    "address": "Belati, Solapur - 413002, Maharashtra, India",
+    "phone": "+91 98765 43210",
+    "email": "info@bmitsolapur.com",
+    "website": "https://bmitsolapur.com",
+    "logo": "/static/images/logo.png",
     "courses": {
-        "cse": {"name": "Computer Science & Engineering", "seats": 60, "fee": 110000, "duration": 4},
-        "entc": {"name": "Electronics & Telecommunication", "seats": 60, "fee": 100000, "duration": 4},
-        "mech": {"name": "Mechanical Engineering", "seats": 60, "fee": 100000, "duration": 4},
-        "civil": {"name": "Civil Engineering", "seats": 60, "fee": 100000, "duration": 4},
-        "mba": {"name": "Master of Business Administration", "seats": 60, "fee": 80000, "duration": 2}
+        "cse": {"name": "Computer Science & Engineering", "seats": 60, "fee": 110000, "duration": 4, "image": "/static/images/cse.png", "department": "Computer Science", "description": "Learn cutting-edge technologies like AI, ML, and Cloud Computing."},
+        "entc": {"name": "Electronics & Telecommunication", "seats": 60, "fee": 100000, "duration": 4, "image": "/static/images/entc.png", "department": "Electronics", "description": "Master the world of electronics, communication systems, and IoT."},
+        "mech": {"name": "Mechanical Engineering", "seats": 60, "fee": 100000, "duration": 4, "image": "/static/images/mech.png", "department": "Mechanical", "description": "Design and build the future with core mechanical engineering principles."},
+        "civil": {"name": "Civil Engineering", "seats": 60, "fee": 100000, "duration": 4, "image": "/static/images/civil.png", "department": "Civil", "description": "Shape the world with sustainable infrastructure and construction."},
+        "mba": {"name": "Master of Business Administration", "seats": 60, "fee": 80000, "duration": 2, "image": "/static/images/mba.png", "department": "Management", "description": "Develop leadership skills and business acumen for the corporate world."}
     },
     "departments": ["Computer Science", "Electronics", "Mechanical", "Civil", "MBA", "General Science"],
     "facilities": [
-        {"name": "Central Library", "description": "Well-stocked library with digital resources"},
-        {"name": "Hostel", "description": "Separate hostels for boys and girls with mess facilities"},
-        {"name": "Sports Complex", "description": "Indoor and outdoor sports facilities"},
-        {"name": "Transportation", "description": "Bus service from all major parts of the city"},
-        {"name": "Cafeteria", "description": "Hygienic food court serving nutritious meals"}
+        {"name": "Central Library", "description": "Well-stocked library with digital resources", "image": "/static/images/library.png", "icon": "fas fa-book"},
+        {"name": "Hostel", "description": "Separate hostels for boys and girls with mess facilities", "image": "/static/images/about_campus.png", "icon": "fas fa-bed"},
+        {"name": "Sports Complex", "description": "Indoor and outdoor sports facilities", "image": "/static/images/about_campus.png", "icon": "fas fa-basketball-ball"},
+        {"name": "Transportation", "description": "Bus service from all major parts of Solapur city", "image": "/static/images/about_campus.png", "icon": "fas fa-bus"},
+        {"name": "Cafeteria", "description": "Hygienic food court serving nutritious meals", "image": "/static/images/about_campus.png", "icon": "fas fa-utensils"}
+    ],
+    "announcements": [
+        {"title": "Admissions Open 2025-26", "date": "2024-05-01", "content": "Admissions are now open for all undergraduate and postgraduate programs. Apply now!"},
+        {"title": "Annual Tech Fest 'TechnoVision'", "date": "2024-04-15", "content": "Join us for the biggest technical festival of the year. exciting competitions and prizes to be won."},
+        {"title": "Campus Recruitment Drive", "date": "2024-03-20", "content": "Major MNCs visiting campus for recruitment. Final year students, get ready!"}
     ]
 }
 
