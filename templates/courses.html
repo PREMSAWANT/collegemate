@@ -31,28 +31,28 @@
                     </div>
                 </div>
                 
-                <div class="p-6 flex flex-col h-full">
+                <div class="p-6">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                         {{ course.name }}
                     </h3>
-                    <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 flex-grow leading-relaxed">
+                    <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
                         {{ course.description }}
                     </p>
                     
                     <div class="border-t border-slate-200 dark:border-slate-700 pt-4 mb-4">
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="flex items-center text-slate-600 dark:text-slate-300">
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm">
                                 <i class="far fa-clock mr-2 text-indigo-500"></i>
                                 <span>{{ course.duration }} Years</span>
                             </div>
-                            <div class="flex items-center text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm">
                                 <i class="fas fa-users mr-2 text-indigo-500"></i>
                                 <span>{{ course.seats }} Seats</span>
                             </div>
                         </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm text-slate-500 dark:text-slate-400">Annual Fee</span>
-                            <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">₹{{ "{:,}".format(course.fee) }}</span>
+                        <div class="flex items-center justify-between pb-4">
+                            <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Annual Fee</span>
+                            <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">₹{{ "{:,}".format(course.fee) }}</span>
                         </div>
                     </div>
                     
