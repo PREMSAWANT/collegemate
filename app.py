@@ -1,3 +1,28 @@
+from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction
+import google.generativeai as genai
+import os
+import tempfile
+import re
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+import json
+import random
+from functools import wraps
+import hashlib
+import secrets
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+from datetime import datetime, timedelta
+
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
 app.secret_key = os.getenv("SECRET_KEY", "your-secret-key-here")
