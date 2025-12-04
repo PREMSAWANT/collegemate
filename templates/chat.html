@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-4rem)] flex flex-col">
+    <div class="bg-white rounded-lg shadow-lg flex-grow flex flex-col overflow-hidden">
+        <!-- Chat Header -->
+        <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-white text-indigo-600 flex items-center justify-center mr-3">
+                    <i class="fas fa-robot text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-lg">CollegeMate AI</h2>
+                    <p class="text-indigo-200 text-xs">Always here to help</p>
+                </div>
+            </div>
+            <button id="clear-chat" class="text-indigo-200 hover:text-white" title="Clear Chat">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 space-y-4">
+            <!-- Welcome Message -->
+            <div class="flex justify-start">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] border border-slate-200">
+                    <p class="text-slate-800">Hello! I'm your CollegeMate AI assistant. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 bg-white border-t border-slate-200">
+            <form id="chat-form" class="flex items-center space-x-2">
+                <button type="button" id="voice-btn" class="p-2 text-slate-500 hover:text-indigo-600 transition-colors rounded-full hover:bg-slate-100">
+                    <i class="fas fa-microphone text-xl"></i>
+                </button>
+                <input type="text" id="user-input" class="flex-grow border border-slate-300 rounded-full px-4 py-2 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="Type your message...">
+                <button type="submit" class="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById('chat-messages');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+    const voiceBtn = document.getElementById('voice-btn');
+    
+    let conversationHistory = [];
+    let phoneNumber = "{{ session.get('phone', '') }}";
+
+    function appendMessage(role, text) {
+        const div = document.createElement('div');
+        div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = role === 'user' 
+            ? 'bg-indigo-600 text-white p-3 rounded-lg rounded-tr-none shadow-sm max-w-[80%]' 
+            : 'bg-white text-slate-800 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] border border-slate-200';
+            
+        bubble.textContent = text;
+        div.appendChild(bubble);
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const div = document.createElement('div');
+        div.id = 'typing-indicator';
+        div.className = 'flex justify-start';
+        div.innerHTML = `
+            <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-slate-200">
+                <div class="flex space-x-1">
+                    <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        appendMessage('user', message);
+        userInput.value = '';
+        
+        // Add to history
+        conversationHistory.push({ role: 'user', content: message });
+        
+        // Show typing
+        showTypingIndicator();
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: message,
+                    conversation_history: conversationHistory,
+                    phone_number: phoneNumber
+                })
+            });
+
+            const data = await response.json();
+            removeTypingIndicator();
+
+            if (data.error) {
+                appendMessage('assistant', "Sorry, I encountered an error. Please try again.");
+            } else {
+                appendMessage('assistant', data.text);
+                conversationHistory.push({ role: 'assistant', content: data.text });
+                
+                // Play audio if available
+                if (data.audio_url) {
+                    const audio = new Audio(data.audio_url);
+                    audio.play();
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            removeTypingIndicator();
+            appendMessage('assistant', "Sorry, I'm having trouble connecting right now.");
+        }
+    });
+
+    // Voice Recognition (Simple implementation)
+    if ('webkitSpeechRecognition' in window) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+
+        voiceBtn.addEventListener('click', () => {
+            recognition.start();
+            voiceBtn.classList.add('text-red-500');
+        });
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript;
+            voiceBtn.classList.remove('text-red-500');
+            chatForm.dispatchEvent(new Event('submit'));
+        };
+
+        recognition.onerror = () => {
+            voiceBtn.classList.remove('text-red-500');
+        };
+        
+        recognition.onend = () => {
+             voiceBtn.classList.remove('text-red-500');
+        };
+    } else {
+        voiceBtn.style.display = 'none';
+    }
+</script>
+{% endblock %}

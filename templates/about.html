@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-white overflow-hidden">
+    <div class="relative max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div class="hidden lg:block bg-slate-50 absolute top-0 bottom-0 left-3/4 w-screen"></div>
+        <div class="mx-auto text-base max-w-prose lg:grid lg:grid-cols-2 lg:gap-8 lg:max-w-none">
+            <div>
+                <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">About Us</h2>
+                <h3 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                    {{ college_info.name }}
+                </h3>
+            </div>
+        </div>
+        <div class="mt-8 lg:grid lg:grid-cols-2 lg:gap-8">
+            <div class="relative lg:row-start-1 lg:col-start-2">
+                <svg class="hidden lg:block absolute top-0 right-0 -mt-20 -mr-20 block h-42 w-42 text-slate-100" fill="currentColor" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                    <polygon points="50,0 100,0 50,100 0,100" />
+                </svg>
+                <div class="relative text-base mx-auto max-w-prose lg:max-w-none">
+                    <figure>
+                        <div class="aspect-w-12 aspect-h-7 lg:aspect-none">
+                            <img class="rounded-lg shadow-lg object-cover object-center" src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80" alt="College Campus" width="1184" height="1376">
+                        </div>
+                    </figure>
+                </div>
+            </div>
+            <div class="mt-8 lg:mt-0">
+                <div class="text-base max-w-prose mx-auto lg:max-w-none">
+                    <p class="text-lg text-slate-500">
+                        Established with a vision to provide quality technical education, {{ college_info.short_name }} has been a pioneer in engineering and management studies. We are committed to fostering an environment of academic excellence and innovation.
+                    </p>
+                </div>
+                <div class="mt-5 prose prose-indigo text-slate-500 mx-auto lg:max-w-none lg:row-start-1 lg:col-start-1">
+                    <p>
+                        Our institute is located at {{ college_info.address }}, providing a serene and conducive atmosphere for learning. We offer undergraduate and postgraduate programs in various disciplines.
+                    </p>
+                    <ul class="mt-8 space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            </div>
+                            <p class="ml-3 text-base text-slate-500">
+                                AICTE Approved and Affiliated to Solapur University
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            </div>
+                            <p class="ml-3 text-base text-slate-500">
+                                Experienced and qualified faculty members
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            </div>
+                            <p class="ml-3 text-base text-slate-500">
+                                Strong industry-institute interaction
+                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            </div>
+                            <p class="ml-3 text-base text-slate-500">
+                                Excellent placement record
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
