@@ -66,7 +66,7 @@ COLLEGE_INFO = {
     "address": "Belati, Solapur - 413002, Maharashtra, India",
     "phone": "+91 98765 43210",
     "email": "info@bmitsolapur.com",
-    "website": "https://bmitsolapur.com",
+    "google_maps": "https://maps.app.goo.gl/VZ2crcs7gnjNjuxy5",
     "logo": "/static/images/logo.png",
     "courses": {
         "cse": {"name": "Computer Science & Engineering", "seats": 60, "fee": 110000, "duration": 4, "image": "/static/images/cse.png", "department": "Computer Science", "description": "Learn cutting-edge technologies like AI, ML, and Cloud Computing."},
@@ -78,10 +78,10 @@ COLLEGE_INFO = {
     "departments": ["Computer Science", "Electronics", "Mechanical", "Civil", "MBA", "General Science"],
     "facilities": [
         {"name": "Central Library", "description": "Well-stocked library with digital resources", "image": "/static/images/library.png", "icon": "fas fa-book"},
-        {"name": "Hostel", "description": "Separate hostels for boys and girls with mess facilities", "image": "/static/images/about_campus.png", "icon": "fas fa-bed"},
-        {"name": "Sports Complex", "description": "Indoor and outdoor sports facilities", "image": "/static/images/about_campus.png", "icon": "fas fa-basketball-ball"},
-        {"name": "Transportation", "description": "Bus service from all major parts of Solapur city", "image": "/static/images/about_campus.png", "icon": "fas fa-bus"},
-        {"name": "Cafeteria", "description": "Hygienic food court serving nutritious meals", "image": "/static/images/about_campus.png", "icon": "fas fa-utensils"}
+        {"name": "Hostel", "description": "Separate hostels for boys and girls with mess facilities", "image": "/static/images/hostel.png", "icon": "fas fa-bed"},
+        {"name": "Sports Complex", "description": "Indoor and outdoor sports facilities", "image": "/static/images/sports.png", "icon": "fas fa-basketball-ball"},
+        {"name": "Transportation", "description": "Bus service from all major parts of Solapur city", "image": "/static/images/transport.png", "icon": "fas fa-bus"},
+        {"name": "Cafeteria", "description": "Hygienic food court serving nutritious meals", "image": "/static/images/cafeteria.png", "icon": "fas fa-utensils"}
     ],
     "announcements": [
         {"title": "Admissions Open 2025-26", "date": "2024-05-01", "content": "Admissions are now open for all undergraduate and postgraduate programs. Apply now!"},

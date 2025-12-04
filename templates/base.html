@@ -6,20 +6,119 @@
     <title>{{ college_info.name }} - AI Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans for a premium feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
                     colors: {
-                        primary: '#4f46e5',
-                        secondary: '#10b981',
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        /* Smooth Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .lovable-gradient {
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
+        
+        .dark .lovable-gradient {
+            background: linear-gradient(to right, #0f172a, #1e293b);
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .chat-message {
             animation: fadeIn 0.3s ease-in-out;
         }
@@ -27,74 +126,62 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        .dark ::-webkit-scrollbar-track {
-            background: #1f2937;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555; 
-        }
     </style>
 </head>
-<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+<body class="h-full lovable-gradient text-slate-900 dark:text-slate-100 transition-colors duration-300">
     <div class="min-h-full flex flex-col">
         <!-- Navigation -->
-        <nav class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 transition-colors duration-200">
+        <nav class="glass sticky top-0 z-50 transition-all duration-300">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
+                <div class="flex justify-between h-20">
                     <div class="flex">
                         <div class="flex-shrink-0 flex items-center">
-                            <a href="{{ url_for('home') }}" class="flex items-center">
-                                <img class="h-10 w-auto mr-2" src="{{ college_info.logo }}" alt="Logo">
-                                <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">{{ college_info.short_name }}</span>
+                            <a href="{{ url_for('home') }}" class="flex items-center group">
+                                <div class="relative">
+                                    <div class="absolute -inset-1 bg-gradient-to-r from-pink-600 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                                    <img class="relative h-12 w-auto mr-3 rounded-full" src="{{ college_info.logo }}" alt="Logo">
+                                </div>
+                                <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">{{ college_info.short_name }}</span>
                             </a>
                         </div>
-                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                            <a href="{{ url_for('home') }}" class="border-transparent text-slate-500 dark:text-slate-300 hover:border-indigo-500 hover:text-slate-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
-                            <a href="{{ url_for('courses') }}" class="border-transparent text-slate-500 dark:text-slate-300 hover:border-indigo-500 hover:text-slate-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Courses</a>
-                            <a href="{{ url_for('facilities') }}" class="border-transparent text-slate-500 dark:text-slate-300 hover:border-indigo-500 hover:text-slate-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Facilities</a>
-                            <a href="{{ url_for('about') }}" class="border-transparent text-slate-500 dark:text-slate-300 hover:border-indigo-500 hover:text-slate-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">About</a>
-                            <a href="{{ url_for('contact') }}" class="border-transparent text-slate-500 dark:text-slate-300 hover:border-indigo-500 hover:text-slate-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Contact</a>
+                        <div class="hidden sm:ml-10 sm:flex sm:space-x-8">
+                            <a href="{{ url_for('home') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Home</a>
+                            <a href="{{ url_for('courses') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Courses</a>
+                            <a href="{{ url_for('facilities') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Facilities</a>
+                            <a href="{{ url_for('about') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">About</a>
+                            <a href="{{ url_for('contact') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Contact</a>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
                         <!-- Dark Mode Toggle -->
-                        <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-lg text-sm p-2.5">
+                        <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-full text-sm p-2.5 transition-colors">
                             <i id="theme-toggle-dark-icon" class="hidden fas fa-moon"></i>
                             <i id="theme-toggle-light-icon" class="hidden fas fa-sun"></i>
                         </button>
 
                         {% if session.get('user_id') %}
-                            <a href="{{ url_for('chat_page') }}" class="text-slate-500 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium">
-                                <i class="fas fa-comments mr-1"></i> Chat
+                            <a href="{{ url_for('chat_page') }}" class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                    <i class="fas fa-comments mr-2"></i> Chat
+                                </span>
                             </a>
                             <div class="relative ml-3 group">
-                                <button class="flex items-center max-w-xs bg-white dark:bg-slate-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <button class="flex items-center max-w-xs rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform hover:scale-105">
                                     <span class="sr-only">Open user menu</span>
-                                    <div class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold">
+                                    <div class="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
                                         {{ session.get('username')[0].upper() }}
                                     </div>
                                 </button>
-                                <div class="hidden group-hover:block absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-slate-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <div class="hidden group-hover:block absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-1 bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 transform transition-all duration-200 origin-top-right">
                                     {% if session.get('user_type') == 'admin' %}
-                                    <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600">Dashboard</a>
+                                    <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700">Dashboard</a>
                                     {% endif %}
-                                    <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600">Sign out</a>
+                                    <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700">Sign out</a>
                                 </div>
                             </div>
                         {% else %}
-                            <a href="{{ url_for('login') }}" class="text-slate-500 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium">Log in</a>
-                            <a href="{{ url_for('register') }}" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <a href="{{ url_for('login') }}" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-semibold transition-colors">Log in</a>
+                            <a href="{{ url_for('register') }}" class="text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 transition-all shadow-lg hover:shadow-xl">
                                 Register
                             </a>
                         {% endif %}
@@ -106,12 +193,12 @@
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
                     {% for category, message in messages %}
-                        <div class="rounded-md p-4 mb-4 {{ 'bg-green-50 text-green-800 dark:bg-green-900 dark:text-green-200' if category == 'success' else 'bg-red-50 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
-                            <div class="flex">
+                        <div class="rounded-xl p-4 mb-4 shadow-md {{ 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-200 border border-green-200 dark:border-green-800' if category == 'success' else 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-200 border border-red-200 dark:border-red-800' }}">
+                            <div class="flex items-center">
                                 <div class="flex-shrink-0">
-                                    <i class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }}"></i>
+                                    <i class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }} text-xl"></i>
                                 </div>
                                 <div class="ml-3">
                                     <p class="text-sm font-medium">{{ message }}</p>
@@ -129,11 +216,44 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 mt-auto transition-colors duration-200">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <p class="text-center text-slate-500 dark:text-slate-400 text-sm">
-                    &copy; {{ 2024 }} {{ college_info.name }}. All rights reserved.
-                </p>
+        <footer class="glass mt-auto transition-colors duration-300">
+            <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <img class="h-8 w-auto mr-2" src="{{ college_info.logo }}" alt="Logo">
+                            <span class="text-lg font-bold text-slate-800 dark:text-white">{{ college_info.short_name }}</span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                            Empowering students with knowledge, innovation, and excellence. Join us in shaping the future.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Quick Links</h3>
+                        <ul class="space-y-3">
+                            <li><a href="{{ url_for('courses') }}" class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-sm">Courses</a></li>
+                            <li><a href="{{ url_for('facilities') }}" class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-sm">Facilities</a></li>
+                            <li><a href="{{ url_for('contact') }}" class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-sm">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Connect With Us</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-slate-400 hover:text-blue-600 transition-colors transform hover:scale-110"><i class="fab fa-facebook text-xl"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-sky-500 transition-colors transform hover:scale-110"><i class="fab fa-twitter text-xl"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-pink-600 transition-colors transform hover:scale-110"><i class="fab fa-instagram text-xl"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-blue-700 transition-colors transform hover:scale-110"><i class="fab fa-linkedin text-xl"></i></a>
+                        </div>
+                        <p class="mt-4 text-slate-500 dark:text-slate-400 text-sm">
+                            {{ college_info.address }}
+                        </p>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-8 text-center">
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        &copy; {{ 2024 }} {{ college_info.name }}. All rights reserved.
+                    </p>
+                </div>
             </div>
         </footer>
     </div>
