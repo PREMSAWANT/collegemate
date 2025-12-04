@@ -1,16 +1,3 @@
-from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
-import json
-import random
-from functools import wraps
-import hashlib
-import secrets
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
-
-# Load environment variables
-load_dotenv()
-
 app = Flask(__name__)
 CORS(app)
 app.secret_key = os.getenv("SECRET_KEY", "your-secret-key-here")
