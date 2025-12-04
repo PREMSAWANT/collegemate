@@ -379,7 +379,7 @@ def contact():
 def chat_page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('chat.html')
+    return render_template('chat.html', college_info=COLLEGE_INFO)
 
 @app.route('/api/chat', methods=['POST'])
 def chat_api():
@@ -426,10 +426,10 @@ def register():
         user_type = request.form['user_type']
         
         if username == ADMIN_USERNAME:
-            return render_template('register.html', error="Username reserved.")
+            return render_template('register.html', error="Username reserved.", college_info=COLLEGE_INFO)
         
         if password != confirm_password:
-            return render_template('register.html', error="Passwords do not match")
+            return render_template('register.html', error="Passwords do not match", college_info=COLLEGE_INFO)
         
         try:
             password_hash = generate_password_hash(password)
@@ -454,9 +454,9 @@ def register():
             return redirect(url_for('chat_page'))
             
         except Exception as e:
-            return render_template('register.html', error="Username or email already exists")
+            return render_template('register.html', error="Username or email already exists", college_info=COLLEGE_INFO)
     
-    return render_template('register.html')
+    return render_template('register.html', college_info=COLLEGE_INFO)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -481,9 +481,9 @@ def login():
             session['user_type'] = user.user_type
             return redirect(url_for('chat_page'))
         
-        return render_template('login.html', error="Invalid credentials")
+        return render_template('login.html', error="Invalid credentials", college_info=COLLEGE_INFO)
     
-    return render_template('login.html')
+    return render_template('login.html', college_info=COLLEGE_INFO)
 
 @app.route('/logout')
 def logout():
