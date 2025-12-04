@@ -61,12 +61,12 @@ ADMIN_PASSWORD = "Bmit@24"  # In production, use hashed password
 
 # College Information (In-memory fallback, ideally should be in DB)
 COLLEGE_INFO = {
-    "name": "Brahmdevdada Mane Institute of Technology, Solapur",
-    "short_name": "BMIT Solapur",
-    "address": "Belati, Solapur - 413002, Maharashtra, India",
-    "phone": "+91 98765 43210",
-    "email": "info@bmitsolapur.com",
-    "website": "https://bmitsolapur.com",
+    "name": "CollegeMate",
+    "short_name": "CollegeMate",
+    "address": "Your College Address",
+    "phone": "+91 1234567890",
+    "email": "info@collegemate.com",
+    "website": "https://collegemate.com",
     "courses": {
         "cse": {"name": "Computer Science & Engineering", "seats": 60, "fee": 110000, "duration": 4},
         "entc": {"name": "Electronics & Telecommunication", "seats": 60, "fee": 100000, "duration": 4},
@@ -79,7 +79,7 @@ COLLEGE_INFO = {
         {"name": "Central Library", "description": "Well-stocked library with digital resources"},
         {"name": "Hostel", "description": "Separate hostels for boys and girls with mess facilities"},
         {"name": "Sports Complex", "description": "Indoor and outdoor sports facilities"},
-        {"name": "Transportation", "description": "Bus service from all major parts of Solapur city"},
+        {"name": "Transportation", "description": "Bus service from all major parts of the city"},
         {"name": "Cafeteria", "description": "Hygienic food court serving nutritious meals"}
     ]
 }
