@@ -68,6 +68,60 @@
     </script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+        
+        .dark #preloader {
+            background: #0f172a;
+        }
+        
+        .loader-content {
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        .loader-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -130,6 +184,13 @@
     </style>
 </head>
 <body class="h-full lovable-gradient text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <img src="{{ college_info.logo }}" alt="Logo" class="loader-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
     <div class="min-h-full flex flex-col">
         <!-- Navigation -->
         <nav class="glass sticky top-0 z-50 transition-all duration-300">
@@ -261,6 +322,13 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Preloader Logic
+        window.addEventListener('load', function() {
+            var preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            preloader.style.visibility = 'hidden';
+        });
+
         AOS.init({
             duration: 800,
             once: true,
