@@ -1,18 +1,4 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
-from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction
-import google.generativeai as genai
-import os
-import tempfile
-import re
-import asyncio
-import edge_tts
-import pandas as pd
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from dotenv import load_dotenv
 import json
 import random
 from functools import wraps
