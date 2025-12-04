@@ -439,6 +439,19 @@ def register():
         if password != confirm_password:
             return render_template('register.html', error="Passwords do not match", college_info=COLLEGE_INFO)
         
+        # Check for existing username, email, or phone
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return render_template('register.html', error=f"Username '{username}' is already taken. Please choose another.", college_info=COLLEGE_INFO)
+        
+        existing_email = User.query.filter_by(email=email).first()
+        if existing_email:
+            return render_template('register.html', error=f"Email '{email}' is already registered. Please use a different email or login.", college_info=COLLEGE_INFO)
+        
+        existing_phone = User.query.filter_by(phone=phone).first()
+        if existing_phone:
+            return render_template('register.html', error=f"Phone number '{phone}' is already registered. Please use a different number.", college_info=COLLEGE_INFO)
+        
         try:
             password_hash = generate_password_hash(password)
             user = User(
@@ -464,7 +477,9 @@ def register():
             return redirect(url_for('chat_page'))
             
         except Exception as e:
-            return render_template('register.html', error="Username or email already exists", college_info=COLLEGE_INFO)
+            db.session.rollback()
+            print(f"Registration error: {str(e)}")
+            return render_template('register.html', error="An error occurred during registration. Please try again.", college_info=COLLEGE_INFO)
     
     return render_template('register.html', college_info=COLLEGE_INFO)
 
