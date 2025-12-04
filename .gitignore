@@ -1,15 +1,50 @@
+# Environment Variables
 .env
+
+# Python Cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+
+# Virtual Environments
 env/
 venv/
 .venv/
+
+# Database Files
 *.db
 *.sqlite3
+*.sqlite
+college.db
+
+# Uploads and User Generated Content
 uploads/
+
+# Development Files
+*.log
+check_db.py
+update_db_schema.py
+
+# OS Files
 .DS_Store
+Thumbs.db
+
+# Excel/Data Files
 college_data.xlsx
 admissions.xlsx
+*.xlsx
+*.xls
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build Files
+dist/
+build/
+*.egg-info/
