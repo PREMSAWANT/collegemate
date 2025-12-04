@@ -430,6 +430,8 @@ def register():
         email = request.form['email']
         phone = request.form['phone']
         user_type = request.form['user_type']
+        department = request.form.get('department')
+        year = request.form.get('year')
         
         if username == ADMIN_USERNAME:
             return render_template('register.html', error="Username reserved.", college_info=COLLEGE_INFO)
@@ -445,7 +447,9 @@ def register():
                 fullname=fullname,
                 email=email,
                 phone=phone,
-                user_type=user_type
+                user_type=user_type,
+                department=department,
+                year=year
             )
             db.session.add(user)
             db.session.commit()
