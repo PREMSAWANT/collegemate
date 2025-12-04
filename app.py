@@ -66,7 +66,7 @@ COLLEGE_INFO = {
     "address": "Belati, Solapur - 413002, Maharashtra, India",
     "phone": "+91 98765 43210",
     "email": "info@bmitsolapur.com",
-    "google_maps": "https://maps.app.goo.gl/VZ2crcs7gnjNjuxy5",
+    "google_maps": "https://maps.app.goo.gl/NFZd1Rb8xFb1R3966",
     "logo": "/static/images/logo.png",
     "courses": {
         "cse": {"name": "Computer Science & Engineering", "seats": 60, "fee": 110000, "duration": 4, "image": "/static/images/cse.png", "department": "Computer Science", "description": "Learn cutting-edge technologies like AI, ML, and Cloud Computing."},
