@@ -111,7 +111,10 @@ The application will be available at `http://localhost:5000`
 
 ### Admin Dashboard
 
-Admin credentials are configured in `app.py`. 
+Access the admin dashboard with these credentials:
+
+- **Username**: `admin`
+- **Password**: `Bmit@24`
 
 > **🔒 Security Note**: Change the default admin credentials before deploying to production.
 
