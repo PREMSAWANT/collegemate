@@ -2,7 +2,14 @@
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction
-import google.generativeai as genai
+# Try to import Gemini, but make it optional
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+    genai = None
+
 import os
 import tempfile
 import re
@@ -52,7 +59,7 @@ except OSError:
 
 # Gemini Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if GEMINI_API_KEY:
+if GEMINI_AVAILABLE and GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 # Admin Authentication
@@ -94,7 +101,11 @@ COLLEGE_INFO = {
 
 def get_gemini_model():
     """Get Gemini model instance"""
-    return genai.GenerativeModel('gemini-1.5-flash')
+    if not GEMINI_AVAILABLE:
+        raise ImportError("Google Generative AI package is not installed")
+    if not GEMINI_API_KEY:
+        raise ValueError("GEMINI_API_KEY is not configured")
+    return genai.GenerativeModel('gemini-2.5-flash')
 
 def admin_required(f):
     @wraps(f)
@@ -247,6 +258,12 @@ def get_ai_response(message, conversation_history):
     try:
         if not message:
             return "I didn't receive any message. Could you please try again?"
+        
+        if not GEMINI_AVAILABLE:
+            return "I'm sorry, the AI chat feature is currently unavailable. The required package (google-generativeai) is not installed. Please contact the administrator."
+        
+        if not GEMINI_API_KEY:
+            return "I'm sorry, the AI chat feature is not configured. Please contact the administrator."
             
         # Prepare system message
         course_lines = []
@@ -278,7 +295,7 @@ Always ask for the student's phone number as it helps us keep track of their inq
 IMPORTANT: Format your responses in a conversational way. Use complete sentences and paragraphs. NEVER use numbered lists or bullet points.
 """
         
-        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction=system_instruction)
+        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
         
         # Convert history to Gemini format
         chat_history = []
@@ -299,6 +316,9 @@ IMPORTANT: Format your responses in a conversational way. Use complete sentences
 def extract_info_from_message(user_message, ai_response):
     """Extract structured information from the conversation using Gemini"""
     try:
+        if not GEMINI_AVAILABLE or not GEMINI_API_KEY:
+            return "{}"
+        
         model = get_gemini_model()
         prompt = f"""
         Analyze the following conversation and extract relevant information into a JSON object.
