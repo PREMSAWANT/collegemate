@@ -21,41 +21,47 @@
 
         <div class="space-y-20">
             {% for facility in college_info.facilities %}
-            <div class="glass-card overflow-hidden transform transition duration-500 hover:scale-[1.02]">
-                <div class="lg:grid lg:grid-cols-2 lg:gap-4">
-                    <div class="relative h-64 lg:h-full min-h-[300px] overflow-hidden group">
-                        <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="{{ facility.image }}" alt="{{ facility.name }}">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="glass-card overflow-hidden transform transition duration-500 hover:scale-[1.02] border-0 ring-1 ring-white/20">
+                <div class="lg:grid lg:grid-cols-2 lg:gap-0">
+                    <div class="relative h-64 lg:h-full min-h-[350px] overflow-hidden group/image">
+                        <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-110" src="{{ facility.image }}" alt="{{ facility.name }}">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+                        <div class="absolute inset-0 bg-indigo-900/20 mix-blend-multiply opacity-0 group-hover/image:opacity-100 transition-opacity duration-500"></div>
                     </div>
-                    <div class="p-8 lg:p-12 flex flex-col justify-center">
-                        <div class="flex items-center mb-6">
-                            <div class="flex-shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-3 shadow-lg">
+                    <div class="p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+                        <!-- Decorative element -->
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                        
+                        <div class="flex items-center mb-6 relative z-10">
+                            <div class="flex-shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-3.5 shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform duration-300">
                                 <i class="{{ facility.icon }} text-white text-2xl"></i>
                             </div>
-                            <h3 class="ml-4 text-3xl font-bold text-slate-900 dark:text-white">{{ facility.name }}</h3>
+                            <h3 class="ml-5 text-3xl font-bold text-slate-900 dark:text-white">{{ facility.name }}</h3>
                         </div>
-                        <p class="mt-2 text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+                        <p class="mt-2 text-lg text-slate-600 dark:text-slate-300 leading-relaxed relative z-10">
                             {{ facility.description }}
                         </p>
                         
-                        <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-                            <h4 class="text-sm font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase mb-4">Key Highlights</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div class="flex items-center text-slate-600 dark:text-slate-300">
-                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                    <span>Modern Infrastructure</span>
+                        <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700/50 relative z-10">
+                            <h4 class="text-sm font-bold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase mb-5 flex items-center">
+                                <i class="fas fa-star mr-2 text-xs"></i> Key Highlights
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="flex items-center text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 p-2 rounded-lg">
+                                    <i class="fas fa-check-circle text-green-500 mr-2.5"></i>
+                                    <span class="text-sm font-medium">Modern Infrastructure</span>
                                 </div>
-                                <div class="flex items-center text-slate-600 dark:text-slate-300">
-                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                    <span>24/7 Access</span>
+                                <div class="flex items-center text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 p-2 rounded-lg">
+                                    <i class="fas fa-check-circle text-green-500 mr-2.5"></i>
+                                    <span class="text-sm font-medium">24/7 Access</span>
                                 </div>
-                                <div class="flex items-center text-slate-600 dark:text-slate-300">
-                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                    <span>Student Centric</span>
+                                <div class="flex items-center text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 p-2 rounded-lg">
+                                    <i class="fas fa-check-circle text-green-500 mr-2.5"></i>
+                                    <span class="text-sm font-medium">Student Centric</span>
                                 </div>
-                                <div class="flex items-center text-slate-600 dark:text-slate-300">
-                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                    <span>Well Maintained</span>
+                                <div class="flex items-center text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 p-2 rounded-lg">
+                                    <i class="fas fa-check-circle text-green-500 mr-2.5"></i>
+                                    <span class="text-sm font-medium">Well Maintained</span>
                                 </div>
                             </div>
                         </div>
