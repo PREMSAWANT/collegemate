@@ -70,18 +70,7 @@ pip install -r requirements.txt
 
 ### 3. Configure environment variables
 
-> **⚠️ IMPORTANT: API Keys Are Placeholders**
-> 
-> All API keys and secrets in `.env.example` are **placeholders only**. 
-> You **must** replace them with your own valid keys before running the application.
-
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env  # On Unix/Mac
-copy .env.example .env  # On Windows
-```
-
-Update the following variables in `.env`:
+Create a `.env` file in the root directory with the following variables:
 
 #### Required Configuration
 
@@ -93,12 +82,11 @@ Update the following variables in `.env`:
 - **GEMINI_API_KEY**: Your Google Gemini API key
   - Get yours at: https://ai.google.dev/
   - Free tier available with generous limits
-  - Example: `AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXX`
 
-- **DATABASE_URL**: Your PostgreSQL database connection string
+- **DATABASE_URL**: Your database connection string
   - Format: `postgresql://username:password@host:port/database`
   - For local SQLite (development): `sqlite:///college.db`
-  - For production (Neon, Supabase, etc.): Use the provided connection string
+  - For production: Use your PostgreSQL provider's connection string
 
 ### 4. Initialize the database
 ```bash
@@ -121,12 +109,11 @@ The application will be available at `http://localhost:5000`
 
 ## Admin Access
 
-### Admin Dashboard Credentials
+### Admin Dashboard
 
-- **Username**: `admin`
-- **Password**: `Bmit@24`
+Admin credentials are configured in `app.py`. 
 
-> **🔒 Security Note**: Change the admin password in production by updating the `ADMIN_PASSWORD` variable in `app.py` (line 60).
+> **🔒 Security Note**: Change the default admin credentials before deploying to production.
 
 Access the admin dashboard at: `http://localhost:5000/admin/dashboard`
 
@@ -143,7 +130,7 @@ collegemate/
 ├── app.py                 # Main Flask application
 ├── models.py              # Database models
 ├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variables template (PLACEHOLDERS ONLY)
+
 ├── .gitignore            # Git ignore file (protects secrets)
 ├── templates/            # HTML templates
 │   ├── index.html        # Homepage
@@ -203,8 +190,8 @@ Quick steps:
 
 ## API Keys & Credentials
 
-> **⚠️ CRITICAL REMINDER**: All API keys in `.env.example` are **PLACEHOLDERS**.
-> Replace them with your own valid keys from:
+> **⚠️ CRITICAL REMINDER**: Never commit your `.env` file to version control.
+> Get your own API keys from:
 > - Google Gemini API: https://ai.google.dev/
 > - Database: Your PostgreSQL provider (Neon, Supabase, etc.)
 
