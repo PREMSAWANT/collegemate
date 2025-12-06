@@ -8,14 +8,20 @@ CollegeMate is an AI-powered assistant for Brahmdevdada Mane Institute of Techno
 
 ## Features
 
-- 🤖 AI-powered chat interface using Google Gemini
-- 🎤 Voice interaction support
-- 📚 Course information and admission details
-- 🏫 Campus facilities information
-- 👥 User registration and authentication system
-- 📊 Admin dashboard for monitoring interactions
-- 💬 Conversation history tracking
-- 🎨 Modern, responsive UI with split-screen chat layout
+### Static Features (Available in Live Demo)
+- � College Information (About)
+- 📚 Course Details & Fees
+- 🏫 Campus Facilities Showcase
+- 📞 Contact Information
+
+### Local-Only Features (Requires Local Setup)
+- 🔐 User Authentication (Login/Register)
+- 💬 AI Chatbot with History (Requires Gemini API)
+- 📊 Admin Dashboard & Analytics
+- 📝 Admission Management System
+- � User Profile Management
+
+> **Note:** The live demo runs on Vercel with a read-only filesystem. For full functionality including user accounts and database persistence, please set up the project locally.
 
 ## Screenshots
 
@@ -83,18 +89,14 @@ python -c "from app import app, db; app.app_context().push(); db.create_all(); p
 
 ### 5. Run the application
 
-#### Development mode (SQLite):
-```bash
-# Set DATABASE_URL to use SQLite locally
-$env:DATABASE_URL='sqlite:///college.db'; python app.py  # Windows PowerShell
-# OR
-export DATABASE_URL='sqlite:///college.db' && python app.py  # Unix/Mac
-```
+To run locally with SQLite (recommended for testing):
 
-#### Production mode (PostgreSQL):
 ```bash
-python app.py
-# Make sure DATABASE_URL in .env points to your PostgreSQL database
+# Windows PowerShell
+$env:DATABASE_URL='sqlite:///college.db'; python app.py
+
+# Unix/Mac
+export DATABASE_URL='sqlite:///college.db' && python app.py
 ```
 
 The application will be available at `http://localhost:5000`
