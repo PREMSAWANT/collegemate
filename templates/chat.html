@@ -1,83 +1,267 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-4rem)] flex flex-col">
-    <div class="bg-white rounded-lg shadow-lg flex-grow flex flex-col overflow-hidden">
+<div class="flex h-[calc(100vh-4rem)] bg-gradient-to-br from-slate-50 to-slate-100">
+    <!-- Chat Section (Left - 70%) -->
+    <div class="flex-[7] flex flex-col bg-white shadow-xl border-r border-slate-200">
         <!-- Chat Header -->
-        <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
-            <div class="flex items-center">
-                <div class="h-10 w-10 rounded-full bg-white text-indigo-600 flex items-center justify-center mr-3">
-                    <i class="fas fa-robot text-xl"></i>
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-5 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30">
+                        <i class="fas fa-robot text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-xl">CollegeMate AI</h2>
+                        <p class="text-indigo-100 text-sm flex items-center">
+                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                            Always here to help
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="font-semibold text-lg">CollegeMate AI</h2>
-                    <p class="text-indigo-200 text-xs">Always here to help</p>
-                </div>
+                <button id="clear-chat" class="text-white/70 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all" title="Clear Chat">
+                    <i class="fas fa-trash-alt text-lg"></i>
+                </button>
             </div>
-            <button id="clear-chat" class="text-indigo-200 hover:text-white" title="Clear Chat">
-                <i class="fas fa-trash-alt"></i>
-            </button>
         </div>
 
-        <!-- Chat Messages -->
-        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 space-y-4">
+        <!-- Chat Messages Area -->
+        <div id="chat-messages" class="flex-grow p-6 overflow-y-auto bg-gradient-to-b from-slate-50 to-white space-y-4">
             <!-- Welcome Message -->
-            <div class="flex justify-start">
-                <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] border border-slate-200">
-                    <p class="text-slate-800">Hello! I'm your CollegeMate AI assistant. How can I help you today?</p>
+            <div class="flex justify-start animate-fade-in">
+                <div class="bg-gradient-to-r from-white to-slate-50 p-4 rounded-2xl rounded-tl-sm shadow-md max-w-[85%] border border-slate-200">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-indigo-600"></i>
+                        </div>
+                        <p class="text-slate-700 leading-relaxed">Hello! I'm your CollegeMate AI assistant. I can help you with admissions, courses, facilities, and any questions about our college. How can I assist you today?</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Input Area -->
-        <div class="p-4 bg-white border-t border-slate-200">
-            <form id="chat-form" class="flex items-center space-x-2">
-                <button type="button" id="voice-btn" class="p-2 text-slate-500 hover:text-indigo-600 transition-colors rounded-full hover:bg-slate-100">
+        <div class="p-5 bg-white border-t border-slate-200 shadow-lg">
+            <form id="chat-form" class="flex items-center space-x-3">
+                <button type="button" id="voice-btn" class="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all rounded-full">
                     <i class="fas fa-microphone text-xl"></i>
                 </button>
-                <input type="text" id="user-input" class="flex-grow border border-slate-300 rounded-full px-4 py-2 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="Type your message...">
-                <button type="submit" class="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors w-10 h-10 flex items-center justify-center">
+                <div class="flex-grow relative">
+                    <input type="text" id="user-input" class="w-full border-2 border-slate-200 rounded-full px-6 py-3 pr-12 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all shadow-sm" placeholder="Type your message..." autocomplete="off">
+                </div>
+                <button type="submit" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-3 rounded-full hover:shadow-lg hover:scale-105 transition-all w-12 h-12 flex items-center justify-center">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </form>
         </div>
     </div>
+
+    <!-- User Details Panel (Right - 30%) -->
+    <div class="flex-[3] bg-gradient-to-br from-slate-50 to-white p-6 overflow-y-auto">
+        <div class="space-y-6">
+            <!-- User Profile Card -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl ring-4 ring-indigo-100 mb-4">
+                        {% if session.get('fullname') %}
+                            {{ session.get('fullname')[0].upper() }}
+                        {% else %}
+                            <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-1">{{ session.get('fullname', 'Guest User') }}</h3>
+                    <p class="text-sm text-slate-500 mb-4">{{ session.get('user_type', 'Student').title() }}</p>
+                    <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-id-card text-indigo-600 mr-2"></i>
+                    Contact Information
+                </h4>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-indigo-600 text-sm"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-xs text-slate-500 mb-1">Email</p>
+                            <p class="text-sm text-slate-700 font-medium break-all">{{ session.get('email', 'Not provided') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone text-purple-600 text-sm"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-xs text-slate-500 mb-1">Phone</p>
+                            <p class="text-sm text-slate-700 font-medium">{{ session.get('phone', 'Not provided') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Details (if student) -->
+            {% if session.get('department') or session.get('year') %}
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>
+                    Academic Details
+                </h4>
+                <div class="space-y-4">
+                    {% if session.get('department') %}
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-building text-green-600 text-sm"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-xs text-slate-500 mb-1">Department</p>
+                            <p class="text-sm text-slate-700 font-medium">{{ session.get('department') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if session.get('year') %}
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-calendar text-blue-600 text-sm"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-xs text-slate-500 mb-1">Year</p>
+                            <p class="text-sm text-slate-700 font-medium">{{ session.get('year') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-bolt text-indigo-600 mr-2"></i>
+                    Quick Actions
+                </h4>
+                <div class="space-y-2">
+                    <a href="/" class="block w-full text-left px-4 py-3 bg-slate-50 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 rounded-lg transition-all border border-slate-200 hover:border-indigo-200">
+                        <i class="fas fa-home w-5"></i> Home
+                    </a>
+                    <a href="/courses" class="block w-full text-left px-4 py-3 bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-600 rounded-lg transition-all border border-slate-200 hover:border-purple-200">
+                        <i class="fas fa-book w-5"></i> View Courses
+                    </a>
+                    <a href="/facilities" class="block w-full text-left px-4 py-3 bg-slate-50 hover:bg-green-50 text-slate-700 hover:text-green-600 rounded-lg transition-all border border-slate-200 hover:border-green-200">
+                        <i class="fas fa-building w-5"></i> Facilities
+                    </a>
+                    <a href="/logout" class="block w-full text-left px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg transition-all border border-red-200">
+                        <i class="fas fa-sign-out-alt w-5"></i> Logout
+                    </a>
+                </div>
+            </div>
+
+            <!-- College Info -->
+            <div class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
+                <h4 class="font-bold mb-3 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    College Info
+                </h4>
+                <div class="space-y-2 text-sm text-indigo-100">
+                    <p><i class="fas fa-university w-5"></i> {{ college_info.short_name }}</p>
+                    <p><i class="fas fa-map-marker-alt w-5"></i> Solapur, Maharashtra</p>
+                    <p><i class="fas fa-phone w-5"></i> {{ college_info.phone }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+
+/* Custom scrollbar */
+#chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+</style>
 
 <script>
     const chatMessages = document.getElementById('chat-messages');
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
     const voiceBtn = document.getElementById('voice-btn');
+    const clearBtn = document.getElementById('clear-chat');
     
     let conversationHistory = [];
     let phoneNumber = "{{ session.get('phone', '') }}";
 
     function appendMessage(role, text) {
         const div = document.createElement('div');
-        div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+        div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`;
         
-        const bubble = document.createElement('div');
-        bubble.className = role === 'user' 
-            ? 'bg-indigo-600 text-white p-3 rounded-lg rounded-tr-none shadow-sm max-w-[80%]' 
-            : 'bg-white text-slate-800 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] border border-slate-200';
-            
-        bubble.textContent = text;
-        div.appendChild(bubble);
+        if (role === 'user') {
+            div.innerHTML = `
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-lg max-w-[85%]">
+                    <p class="leading-relaxed">${escapeHtml(text)}</p>
+                </div>
+            `;
+        } else {
+            div.innerHTML = `
+                <div class="bg-gradient-to-r from-white to-slate-50 p-4 rounded-2xl rounded-tl-sm shadow-md max-w-[85%] border border-slate-200">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-indigo-600"></i>
+                        </div>
+                        <p class="text-slate-700 leading-relaxed">${escapeHtml(text)}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     function showTypingIndicator() {
         const div = document.createElement('div');
         div.id = 'typing-indicator';
-        div.className = 'flex justify-start';
+        div.className = 'flex justify-start animate-fade-in';
         div.innerHTML = `
-            <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-slate-200">
-                <div class="flex space-x-1">
-                    <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                    <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+            <div class="bg-white p-4 rounded-2xl rounded-tl-sm shadow-md border border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <i class="fas fa-robot text-indigo-600"></i>
+                    </div>
+                    <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
                 </div>
             </div>
         `;
@@ -124,12 +308,6 @@
             } else {
                 appendMessage('assistant', data.text);
                 conversationHistory.push({ role: 'assistant', content: data.text });
-                
-                // Play audio if available
-                if (data.audio_url) {
-                    const audio = new Audio(data.audio_url);
-                    audio.play();
-                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -138,7 +316,26 @@
         }
     });
 
-    // Voice Recognition (Simple implementation)
+    // Clear chat
+    clearBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear the chat history?')) {
+            chatMessages.innerHTML = `
+                <div class="flex justify-start animate-fade-in">
+                    <div class="bg-gradient-to-r from-white to-slate-50 p-4 rounded-2xl rounded-tl-sm shadow-md max-w-[85%] border border-slate-200">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-robot text-indigo-600"></i>
+                            </div>
+                            <p class="text-slate-700 leading-relaxed">Hello! I'm your CollegeMate AI assistant. I can help you with admissions, courses, facilities, and any questions about our college. How can I assist you today?</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            conversationHistory = [];
+        }
+    });
+
+    // Voice Recognition
     if ('webkitSpeechRecognition' in window) {
         const recognition = new webkitSpeechRecognition();
         recognition.continuous = false;
@@ -146,25 +343,28 @@
 
         voiceBtn.addEventListener('click', () => {
             recognition.start();
-            voiceBtn.classList.add('text-red-500');
+            voiceBtn.classList.add('text-red-500', 'animate-pulse');
         });
 
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
             userInput.value = transcript;
-            voiceBtn.classList.remove('text-red-500');
+            voiceBtn.classList.remove('text-red-500', 'animate-pulse');
             chatForm.dispatchEvent(new Event('submit'));
         };
 
         recognition.onerror = () => {
-            voiceBtn.classList.remove('text-red-500');
+            voiceBtn.classList.remove('text-red-500', 'animate-pulse');
         };
         
         recognition.onend = () => {
-             voiceBtn.classList.remove('text-red-500');
+            voiceBtn.classList.remove('text-red-500', 'animate-pulse');
         };
     } else {
         voiceBtn.style.display = 'none';
     }
+
+    // Focus input on load
+    userInput.focus();
 </script>
 {% endblock %}
