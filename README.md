@@ -28,7 +28,17 @@ CollegeMate is an AI-powered assistant for Brahmdevdada Mane Institute of Techno
 ### Chat Interface
 Beautiful split-screen layout with chatbot on the left and user details on the right.
 
-![Chat Interface](docs/chat-ui-preview.png)
+![Chat Interface](static/screenshots/new_chat_ui_1765028215355.png)
+
+### Homepage
+Modern and responsive landing page.
+
+![Homepage](static/screenshots/homepage_ui_1765028484018.png)
+
+### Courses Page
+Detailed course information and fee structure.
+
+![Courses Page](static/screenshots/courses_page_ui_1765028599429.png)
 
 ## Prerequisites
 
