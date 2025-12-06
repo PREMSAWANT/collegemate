@@ -2,6 +2,8 @@
 
 CollegeMate is an AI-powered assistant for Brahmdevdada Mane Institute of Technology, Solapur. It helps students with admissions inquiries, course information, and campus facilities through an intelligent chatbot interface.
 
+**Live Demo:** [https://collegemate-bmit.vercel.app/](https://collegemate-bmit.vercel.app/)
+
 ## Features
 
 - 🤖 AI-powered chat interface using Google Gemini
