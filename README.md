@@ -4,6 +4,8 @@ CollegeMate is an AI-powered assistant for Brahmdevdada Mane Institute of Techno
 
 **Live Demo:** [https://collegemate-bmit.vercel.app/](https://collegemate-bmit.vercel.app/)
 
+> **Note:** The database features (registration, login, chat history) and AI responses in the live demo may be limited or unavailable as it relies on a local database. For full functionality, please run the project locally.
+
 ## Features
 
 - 🤖 AI-powered chat interface using Google Gemini
