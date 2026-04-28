@@ -956,7 +956,7 @@ def student_id_card():
     student = StudentDetails.query.filter_by(user_id=user_id).first()
     admission = Admission.query.filter_by(user_id=user_id).first()
     
-    return render_template('student_id.html', 
+    return render_template('id_card.html', 
                          student=student, 
                          admission=admission,
                          college_info=get_settings())
