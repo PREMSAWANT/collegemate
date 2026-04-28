@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus, Gallery, ResearchProject, EventRegistration
+from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus, Gallery, ResearchProject, EventRegistration, Scholarship
 # Try to import Gemini, but make it optional
 try:
     import google.generativeai as genai
@@ -552,6 +552,11 @@ def register_event():
         'message': 'Registration successful!',
         'ticket_code': ticket_code
     })
+
+@app.route('/scholarships')
+def scholarships():
+    all_scholarships = Scholarship.query.order_by(Scholarship.deadline.asc()).all()
+    return render_template('scholarships.html', scholarships=all_scholarships, college_info=get_settings())
 
 @app.route('/faculty')
 def faculty():

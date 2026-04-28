@@ -223,3 +223,14 @@ class EventRegistration(db.Model):
     registration_date = db.Column(db.DateTime, default=datetime.utcnow)
     
     event = db.relationship('Event', backref='registrations')
+
+class Scholarship(db.Model):
+    __tablename__ = 'scholarships'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    provider = db.Column(db.String(100))
+    amount = db.Column(db.String(50))
+    eligibility = db.Column(db.Text)
+    deadline = db.Column(db.DateTime)
+    apply_link = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

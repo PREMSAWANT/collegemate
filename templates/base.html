@@ -108,13 +108,13 @@
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.12);
-            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
         }
 
         .dark .glass-card {
@@ -196,6 +196,7 @@
                             <a href="{{ url_for('research_hub') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Research</a>
                             <a href="{{ url_for('facilities') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Facilities</a>
                             <a href="{{ url_for('faculty') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Faculty</a>
+                            <a href="{{ url_for('scholarships') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Scholarships</a>
                             <a href="{{ url_for('support') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Support</a>
                             <a href="{{ url_for('about') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">About</a>
                             <a href="{{ url_for('contact') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Contact</a>
