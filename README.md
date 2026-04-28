@@ -9,19 +9,22 @@ CollegeMate is an AI-powered assistant for Brahmdevdada Mane Institute of Techno
 ## Features
 
 ### Static Features (Available in Live Demo)
-- � College Information (About)
-- 📚 Course Details & Fees
-- 🏫 Campus Facilities Showcase
-- 📞 Contact Information
+- 🏛 **College Information**: Detailed about section for BMIT Solapur.
+- 📚 **Course Details**: Comprehensive list of engineering & management programs with fee structures.
+- 🏫 **Campus Facilities**: High-fidelity showcase of infrastructure with 360° tour links.
+- 🎓 **Scholarship Portal**: Integrated view of government and institutional scholarship schemes.
+- 🔬 **Research Hub**: Showcase of ongoing innovation projects, publications, and patents.
+- 🖼 **Campus Gallery**: Masonry-style gallery capturing vibrant campus life.
+- 📞 **Contact Information**: Integrated inquiry and support ticketing system.
 
-### Local-Only Features (Requires Local Setup)
-- 🔐 User Authentication (Login/Register)
-- 💬 AI Chatbot with History (Requires Gemini API)
-- 📊 Admin Dashboard & Analytics
-- 📝 Admission Management System
-- � User Profile Management
+### Local-Only & Full Deployment Features
+- 🔐 **User Authentication**: Secure Login/Register flows with password hashing.
+- 💬 **AI Assistant (Mia)**: Split-screen chatbot with multi-modal (image/voice) support and personality profiles.
+- 📊 **Admin Dashboard**: Real-time analytics, charts (Admission trends, Dept distribution), and database management.
+- 📝 **Admission Wizard**: Intelligent multi-step application form with review and AI-tip logic.
+- 📑 **Data Export**: Export student interactions and applications to Excel for administrative use.
 
-> **Note:** The live demo runs on Vercel with a read-only filesystem. For full functionality including user accounts and database persistence, please set up the project locally.
+> **Note:** The live demo runs on Vercel with a read-only filesystem. For full functionality including user accounts, AI personality selection, and database persistence, please follow the local setup or deploy with a persistent Postgres DB.
 
 ## Screenshots
 
