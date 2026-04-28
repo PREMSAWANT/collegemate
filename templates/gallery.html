@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12" data-aos="fade-up">
+            <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4">Campus Life Gallery</h2>
+            <p class="text-lg text-slate-500 dark:text-slate-400">Capturing the vibrant moments, achievements, and infrastructure at {{ college_info.short_name }}.</p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12" data-aos="fade-up">
+            <a href="{{ url_for('gallery') }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if not request.args.get('category') else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">All Photos</a>
+            <a href="{{ url_for('gallery', category='campus') }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if request.args.get('category') == 'campus' else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">Campus</a>
+            <a href="{{ url_for('gallery', category='event') }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if request.args.get('category') == 'event' else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">Events</a>
+            <a href="{{ url_for('gallery', category='lab') }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if request.args.get('category') == 'lab' else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">Labs & Library</a>
+            <a href="{{ url_for('gallery', category='sports') }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if request.args.get('category') == 'sports' else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">Sports</a>
+        </div>
+
+        <!-- Gallery Grid (Masonry effect using columns) -->
+        <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+            {% for img in images %}
+            <div class="break-inside-avoid glass-card p-2 group cursor-pointer relative overflow-hidden" data-aos="zoom-in" data-aos-delay="{{ loop.index * 50 }}">
+                <div class="relative rounded-2xl overflow-hidden aspect-auto">
+                    <img src="{{ img.image_url }}" alt="{{ img.title }}" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">{{ img.category }}</span>
+                        <h4 class="text-white font-bold text-lg">{{ img.title }}</h4>
+                        <p class="text-slate-300 text-xs mt-1">{{ img.description }}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full py-20 text-center glass-card">
+                <i class="fas fa-camera-retro text-6xl text-slate-200 mb-4"></i>
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white">No photos in this category yet</h3>
+                <p class="text-slate-500">Check back later for new updates from campus life!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

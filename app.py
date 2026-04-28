@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus
+from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus, Gallery
 # Try to import Gemini, but make it optional
 try:
     import google.generativeai as genai
@@ -444,6 +444,27 @@ def resources():
                          departments=settings['departments'],
                          college_info=settings)
 
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        flash('Please login to access your dashboard.', 'info')
+        return redirect(url_for('login'))
+        
+    phone = session.get('phone')
+    student = StudentDetails.query.filter_by(phone_number=phone).first()
+    admission = Admission.query.filter_by(phone_number=phone).order_by(Admission.id.desc()).first()
+    fee_status = FeeStatus.query.filter_by(phone_number=phone).first()
+    conversations = Conversation.query.filter_by(phone_number=phone).order_by(Conversation.id.desc()).limit(5).all()
+    
+    settings = get_settings()
+    
+    return render_template('dashboard.html', 
+                         student=student,
+                         admission=admission,
+                         fee_status=fee_status,
+                         conversations=conversations,
+                         college_info=settings)
+
 @app.route('/fees')
 def fees():
     if 'user_id' not in session:
@@ -455,7 +476,15 @@ def fees():
     
     return render_template('fees.html', fee_status=fee_data, college_info=settings)
 
-@app.route('/faculty')
+@app.route('/gallery')
+def gallery():
+    cat_filter = request.args.get('category')
+    if cat_filter:
+        images = Gallery.query.filter_by(category=cat_filter).order_by(Gallery.id.desc()).all()
+    else:
+        images = Gallery.query.order_by(Gallery.id.desc()).all()
+    
+    return render_template('gallery.html', images=images, college_info=get_settings())
 def faculty():
     faculties = Faculty.query.order_by(Faculty.department).all()
     return render_template('faculty.html', faculties=faculties, college_info=get_settings())

@@ -192,3 +192,12 @@ class FeeStatus(db.Model):
     due_date = db.Column(db.String(20))
     status = db.Column(db.String(20), default='pending') # pending, partially_paid, paid
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Gallery(db.Model):
+    __tablename__ = 'gallery'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50)) # event, campus, sports, lab
+    image_url = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

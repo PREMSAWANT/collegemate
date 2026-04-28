@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-12 bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Welcome Header -->
+        <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6" data-aos="fade-down">
+            <div>
+                <h1 class="text-4xl font-black text-slate-900 dark:text-white">Student Dashboard</h1>
+                <p class="text-slate-500 mt-2">Welcome back, <span class="font-bold text-indigo-600">{{ student.student_name if student else session.get('fullname') }}</span>!</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="px-4 py-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center">
+                    <div class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></div>
+                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Active Academic Year: 2024-25</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Status Overview -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Quick Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
+                                <i class="fas fa-file-signature"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Admission</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-500 mb-1">Current Status</h4>
+                        <p class="text-lg font-black text-slate-900 dark:text-white">{{ admission.admission_status|capitalize if admission else 'Not Applied' }}</p>
+                    </div>
+                    <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Fees</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-500 mb-1">Due Amount</h4>
+                        <p class="text-lg font-black text-slate-900 dark:text-white">
+                            ₹{{ "{:,.0f}".format(fee_status.total_fee - fee_status.paid_fee) if fee_status else '0' }}
+                        </p>
+                    </div>
+                    <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Attendance</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-500 mb-1">Last Update</h4>
+                        <p class="text-lg font-black text-slate-900 dark:text-white">85.4%</p>
+                    </div>
+                </div>
+
+                <!-- Detailed Admission Status -->
+                <div class="glass-card p-8" data-aos="fade-up">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">Academic Journey</h3>
+                        <a href="{{ url_for('admission_apply') }}" class="text-indigo-600 text-sm font-bold hover:underline">Application Details →</a>
+                    </div>
+                    
+                    {% if admission %}
+                    <div class="relative">
+                        <!-- Timeline Line -->
+                        <div class="absolute left-4 top-0 bottom-0 w-1 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
+                        
+                        <div class="space-y-10 relative">
+                            <div class="flex items-start pl-10">
+                                <div class="absolute left-0 w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs border-4 border-slate-50 dark:border-slate-900">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 dark:text-white">Application Submitted</h4>
+                                    <p class="text-xs text-slate-500 mt-1">{{ admission.application_date }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start pl-10">
+                                <div class="absolute left-0 w-8 h-8 rounded-full {{ 'bg-green-500' if admission.admission_status != 'applied' else 'bg-indigo-500 animate-pulse' }} flex items-center justify-center text-white text-xs border-4 border-slate-50 dark:border-slate-900">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold {{ 'text-slate-800 dark:text-white' if admission.admission_status != 'applied' else 'text-indigo-600' }}">Under Review</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Our academic committee is evaluating your marks and documents.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start pl-10">
+                                <div class="absolute left-0 w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-xs border-4 border-slate-50 dark:border-slate-900">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-400">Provisional Admission</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Will be generated once document verification is complete.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-10">
+                        <p class="text-slate-500">You haven't applied for any courses yet.</p>
+                        <a href="{{ url_for('admission_apply') }}" class="mt-4 inline-block px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">Start Application</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Column: Sidebar -->
+            <div class="space-y-8">
+                <!-- Profile Card -->
+                <div class="glass-card p-8 text-center" data-aos="fade-left">
+                    <div class="relative w-24 h-24 mx-auto mb-6">
+                        <img src="https://ui-avatars.com/api/?name={{ session.get('fullname') }}&background=6366f1&color=fff&size=128" alt="Profile" class="w-full h-full rounded-full border-4 border-white dark:border-slate-800 shadow-xl">
+                        <button class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center text-slate-500 hover:text-indigo-600 transition-colors">
+                            <i class="fas fa-camera text-xs"></i>
+                        </button>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white">{{ session.get('fullname') }}</h3>
+                    <p class="text-sm text-slate-500 mb-6">{{ student.phone_number if student else session.get('phone') }}</p>
+                    <div class="flex justify-center space-x-2">
+                        <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 text-[10px] font-bold uppercase rounded-full">Student</span>
+                        <span class="px-3 py-1 bg-green-50 dark:bg-green-900/30 text-green-600 text-[10px] font-bold uppercase rounded-full">Verified</span>
+                    </div>
+                    <button class="w-full mt-8 py-3 border-2 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                        Edit Profile
+                    </button>
+                </div>
+
+                <!-- Recent Conversations -->
+                <div class="glass-card p-8" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-6">Recent Help Chats</h3>
+                    <div class="space-y-4">
+                        {% for conv in conversations %}
+                        <div class="flex items-start space-x-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-colors cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 text-xs">
+                                <i class="fas fa-comment-alt"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-sm font-medium text-slate-700 dark:text-slate-300 line-clamp-1">{{ conv.user_message }}</p>
+                                <p class="text-[10px] text-slate-400 mt-1">{{ conv.timestamp }}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-sm text-slate-400 text-center py-4">No recent chats with Mia.</p>
+                        {% endfor %}
+                    </div>
+                    <a href="{{ url_for('chat_page') }}" class="w-full mt-6 py-3 bg-indigo-600 text-white font-bold rounded-2xl text-center block shadow-lg hover:bg-indigo-700 transition-all">
+                        New Chat with Mia
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
