@@ -186,30 +186,62 @@
                                 <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">{{ college_info.short_name }}</span>
                             </a>
                         </div>
-                        <div class="hidden sm:ml-10 sm:flex sm:space-x-8">
-                            <a href="{{ url_for('home') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Home</a>
-                            <a href="{{ url_for('courses') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Courses</a>
-                            <a href="{{ url_for('resources') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Resources</a>
-                            <a href="{{ url_for('gallery') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Gallery</a>
-                            <a href="{{ url_for('research_hub') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Research</a>
-                            <a href="{{ url_for('facilities') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Facilities</a>
-                            <a href="{{ url_for('faculty') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Faculty</a>
-                            <a href="{{ url_for('scholarships') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Scholarships</a>
-                            <a href="{{ url_for('support') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Support</a>
-                            <a href="{{ url_for('about') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">About</a>
-                            <a href="{{ url_for('contact') }}" class="border-transparent text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-semibold transition-colors">Contact</a>
+                        <div class="hidden md:ml-10 md:flex md:space-x-4 lg:space-x-8 items-center">
+                            <a href="{{ url_for('home') }}" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-semibold transition-colors">Home</a>
+                            
+                            <!-- Academic Dropdown -->
+                            <div class="relative group">
+                                <button class="flex items-center text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-semibold transition-colors">
+                                    Academic <i class="fas fa-chevron-down ml-1.5 text-[10px] group-hover:rotate-180 transition-transform"></i>
+                                </button>
+                                <div class="absolute left-0 mt-0 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-slate-100 dark:border-slate-700">
+                                    <a href="{{ url_for('courses') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Courses</a>
+                                    <a href="{{ url_for('faculty') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Faculty</a>
+                                    <a href="{{ url_for('research_hub') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Research</a>
+                                    <a href="{{ url_for('scholarships') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Scholarships</a>
+                                </div>
+                            </div>
+
+                            <!-- Campus Dropdown -->
+                            <div class="relative group">
+                                <button class="flex items-center text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-semibold transition-colors">
+                                    Campus <i class="fas fa-chevron-down ml-1.5 text-[10px] group-hover:rotate-180 transition-transform"></i>
+                                </button>
+                                <div class="absolute left-0 mt-0 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-slate-100 dark:border-slate-700">
+                                    <a href="{{ url_for('facilities') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Facilities</a>
+                                    <a href="{{ url_for('resources') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Resources</a>
+                                    <a href="{{ url_for('gallery') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Gallery</a>
+                                </div>
+                            </div>
+
+                            <!-- Info Dropdown -->
+                            <div class="relative group">
+                                <button class="flex items-center text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 text-sm font-semibold transition-colors">
+                                    More <i class="fas fa-chevron-down ml-1.5 text-[10px] group-hover:rotate-180 transition-transform"></i>
+                                </button>
+                                <div class="absolute left-0 mt-0 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-slate-100 dark:border-slate-700">
+                                    <a href="{{ url_for('about') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">About Us</a>
+                                    <a href="{{ url_for('contact') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Contact</a>
+                                    <a href="{{ url_for('support') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700">Support</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 md:space-x-4">
                         <!-- Dark Mode Toggle -->
                         <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-full text-sm p-2.5 transition-colors">
                             <i id="theme-toggle-dark-icon" class="hidden fas fa-moon"></i>
                             <i id="theme-toggle-light-icon" class="hidden fas fa-sun"></i>
                         </button>
 
+                        <!-- Mobile Menu Button -->
+                        <button id="mobile-menu-button" type="button" class="md:hidden text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-full text-sm p-2.5 transition-colors">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+
                         {% if session.get('user_id') %}
-                            <a href="{{ url_for('chat_page') }}" class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            <a href="{{ url_for('chat_page') }}" class="hidden sm:relative sm:inline-flex items-center justify-center p-0.5 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="relative px-5 py-2 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                                     <i class="fas fa-comments mr-2"></i> Chat
                                 </span>
                             </a>
@@ -230,12 +262,47 @@
                                 </div>
                             </div>
                         {% else %}
-                            <a href="{{ url_for('login') }}" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-semibold transition-colors">Log in</a>
-                            <a href="{{ url_for('register') }}" class="text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 transition-all shadow-lg hover:shadow-xl">
+                            <a href="{{ url_for('login') }}" class="hidden sm:block text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-semibold transition-colors">Log in</a>
+                            <a href="{{ url_for('register') }}" class="text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2 text-center mr-2 mb-0 transition-all shadow-lg hover:shadow-xl">
                                 Register
                             </a>
                         {% endif %}
                     </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Container -->
+            <div id="mobile-menu" class="hidden md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 animate-fade-in-down">
+                <div class="px-4 pt-2 pb-6 space-y-1">
+                    <a href="{{ url_for('home') }}" class="block px-3 py-4 text-base font-bold text-slate-700 dark:text-slate-200 border-b border-slate-50 dark:border-slate-800/50">Home</a>
+                    
+                    <div class="py-2">
+                        <p class="px-3 text-xs font-black text-indigo-600 uppercase tracking-widest mb-2">Academic</p>
+                        <a href="{{ url_for('courses') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Courses</a>
+                        <a href="{{ url_for('faculty') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Faculty</a>
+                        <a href="{{ url_for('research_hub') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Research</a>
+                        <a href="{{ url_for('scholarships') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Scholarships</a>
+                    </div>
+
+                    <div class="py-2">
+                        <p class="px-3 text-xs font-black text-indigo-600 uppercase tracking-widest mb-2">Campus</p>
+                        <a href="{{ url_for('facilities') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Facilities</a>
+                        <a href="{{ url_for('resources') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Resources</a>
+                        <a href="{{ url_for('gallery') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Gallery</a>
+                    </div>
+
+                    <div class="py-2">
+                        <p class="px-3 text-xs font-black text-indigo-600 uppercase tracking-widest mb-2">Support & Info</p>
+                        <a href="{{ url_for('about') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">About Us</a>
+                        <a href="{{ url_for('contact') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Contact</a>
+                        <a href="{{ url_for('support') }}" class="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-300">Support</a>
+                    </div>
+
+                    {% if not session.get('user_id') %}
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <a href="{{ url_for('login') }}" class="block px-3 py-3 text-center text-base font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl">Log In</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -449,6 +516,22 @@
                 btn.innerText = originalText;
             }
         }
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuButton.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchNotifications();
