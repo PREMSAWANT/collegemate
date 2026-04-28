@@ -97,18 +97,13 @@ COLLEGE_INFO = {
         "mba": {"name": "Master of Business Administration", "seats": 60, "fee": 80000, "duration": 2, "image": "/static/images/mba.png", "department": "Management", "description": "Develop leadership skills and business acumen for the corporate world."}
     },
     "departments": ["Computer Science", "Electronics", "Mechanical", "Civil", "MBA", "General Science"],
-    "facilities": [
-        {"name": "Central Library", "description": "Well-stocked library with digital resources", "image": "/static/images/library.png", "icon": "fas fa-book"},
-        {"name": "Hostel", "description": "Separate hostels for boys and girls with mess facilities", "image": "/static/images/hostel.jpg", "icon": "fas fa-bed"},
-        {"name": "Sports Complex", "description": "Indoor and outdoor sports facilities", "image": "/static/images/sports.jpg", "icon": "fas fa-basketball-ball"},
-        {"name": "Transportation", "description": "Bus service from all major parts of Solapur city", "image": "/static/images/transport.jpg", "icon": "fas fa-bus"},
-        {"name": "Cafeteria", "description": "Hygienic food court serving nutritious meals", "image": "/static/images/cafeteria.jpg", "icon": "fas fa-utensils"}
-    ],
     "announcements": [
         {"title": "Admissions Open 2025-26", "date": "2024-05-01", "content": "Admissions are now open for all undergraduate and postgraduate programs. Apply now!"},
         {"title": "Annual Tech Fest 'TechnoVision'", "date": "2024-04-15", "content": "Join us for the biggest technical festival of the year. exciting competitions and prizes to be won."},
         {"title": "Campus Recruitment Drive", "date": "2024-03-20", "content": "Major MNCs visiting campus for recruitment. Final year students, get ready!"}
-    ]
+    ],
+    "faqs": [],
+    "facilities": []
 }
 
 # --- Helper Functions ---
@@ -631,6 +626,10 @@ def admission_apply():
             flash(res['message'], 'error')
             
     return render_template('admission_wizard.html', college_info=settings)
+
+@app.route('/chat')
+def chat_page():
+    return render_template('chat.html', college_info=get_settings())
 
 @app.route('/api/chat', methods=['POST'])
 def chat_api():
