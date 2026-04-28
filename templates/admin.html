@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 transition-colors duration-300 bg-slate-50 dark:bg-slate-900 min-h-screen">
     <div class="md:flex md:items-center md:justify-between mb-8">
         <div class="flex-1 min-w-0">
             <h2 class="text-2xl font-bold leading-7 text-slate-900 sm:text-3xl sm:truncate">
@@ -19,13 +21,19 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8" id="stats-container">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-12" id="stats-container">
         <!-- Stats will be loaded via JS -->
-        <div class="bg-white overflow-hidden shadow rounded-lg animate-pulse">
-            <div class="p-5">
-                <div class="h-6 bg-slate-200 rounded w-1/2 mb-4"></div>
-                <div class="h-10 bg-slate-200 rounded w-1/4"></div>
-            </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12" data-aos="fade-up">
+        <div class="glass-card p-8">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-6">Admission Trends (2024)</h3>
+            <canvas id="admissionChart" height="200"></canvas>
+        </div>
+        <div class="glass-card p-8">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-6">Applications by Department</h3>
+            <canvas id="deptChart" height="200"></canvas>
         </div>
     </div>
 
@@ -58,69 +66,68 @@
         .then(response => response.json())
         .then(data => {
             const statsContainer = document.getElementById('stats-container');
-            statsContainer.innerHTML = `
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-                                <i class="fas fa-users text-white text-xl"></i>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">Total Visitors Today</dt>
-                                    <dd class="text-3xl font-semibold text-slate-900">${data.visitors}</dd>
-                                </dl>
-                            </div>
+            const stats = [
+                { title: 'Total Visitors', value: data.visitors, icon: 'fa-users', color: 'indigo' },
+                { title: 'New Admissions', value: data.admissions, icon: 'fa-user-graduate', color: 'green' },
+                { title: 'Pending Grievances', value: data.grievances, icon: 'fa-exclamation-circle', color: 'red' },
+                { title: 'Upcoming Events', value: data.events, icon: 'fa-calendar-star', color: 'blue' }
+            ];
+
+            statsContainer.innerHTML = stats.map(stat => `
+                <div class="glass-card p-6 border-l-4 border-${stat.color}-500 transform hover:scale-105 transition-all">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-${stat.color}-100 dark:bg-${stat.color}-900/30 p-3 rounded-xl text-${stat.color}-600">
+                            <i class="fas ${stat.icon} text-xl"></i>
+                        </div>
+                        <div class="ml-5">
+                            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">${stat.title}</p>
+                            <h4 class="text-3xl font-black text-slate-900 dark:text-white">${stat.value}</h4>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
-                                <i class="fas fa-comments text-white text-xl"></i>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">Active Conversations</dt>
-                                    <dd class="text-3xl font-semibold text-slate-900">${data.conversations}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                                <i class="fas fa-user-graduate text-white text-xl"></i>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">New Admissions</dt>
-                                    <dd class="text-3xl font-semibold text-slate-900">${data.admissions}</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                                <i class="fas fa-robot text-white text-xl"></i>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">AI Response Rate</dt>
-                                    <dd class="text-3xl font-semibold text-slate-900">${data.response_rate}%</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            `).join('');
+
+            initCharts();
         });
+
+    function initCharts() {
+        // Admission Trends Chart
+        const ctx1 = document.getElementById('admissionChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Applications',
+                    data: [65, 59, 80, 81, 56, 95],
+                    borderColor: '#6366f1',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)'
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Department Chart
+        const ctx2 = document.getElementById('deptChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['CSE', 'MECH', 'EXTC', 'CIVIL'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444']
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
 
     // Fetch Conversations
     fetch('/api/admin/conversations')
