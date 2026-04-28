@@ -201,3 +201,25 @@ class Gallery(db.Model):
     image_url = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ResearchProject(db.Model):
+    __tablename__ = 'research_projects'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    department = db.Column(db.String(100), nullable=False)
+    lead_faculty = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    funding_status = db.Column(db.String(50)) # funded, self-funded, industry-sponsored
+    status = db.Column(db.String(20), default='ongoing') # ongoing, completed
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class EventRegistration(db.Model):
+    __tablename__ = 'event_registrations'
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    student_name = db.Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    ticket_code = db.Column(db.String(50), unique=True, nullable=False)
+    registration_date = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    event = db.relationship('Event', backref='registrations')

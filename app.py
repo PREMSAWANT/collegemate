@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus, Gallery
+from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus, Gallery, ResearchProject, EventRegistration
 # Try to import Gemini, but make it optional
 try:
     import google.generativeai as genai
@@ -465,7 +465,20 @@ def dashboard():
                          conversations=conversations,
                          college_info=settings)
 
-@app.route('/fees')
+@app.route('/dashboard/id-card')
+def student_id_card():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    phone = session.get('phone')
+    student = StudentDetails.query.filter_by(phone_number=phone).first()
+    admission = Admission.query.filter_by(phone_number=phone).first()
+    
+    if not student:
+        flash('Student details not found.', 'error')
+        return redirect(url_for('dashboard'))
+        
+    return render_template('id_card.html', student=student, admission=admission, college_info=get_settings())
 def fees():
     if 'user_id' not in session:
         flash('Please login to view your fee status.', 'info')
@@ -476,6 +489,17 @@ def fees():
     
     return render_template('fees.html', fee_status=fee_data, college_info=settings)
 
+@app.route('/research')
+def research_hub():
+    dept_filter = request.args.get('department')
+    if dept_filter:
+        projects = ResearchProject.query.filter_by(department=dept_filter).order_by(ResearchProject.id.desc()).all()
+    else:
+        projects = ResearchProject.query.order_by(ResearchProject.id.desc()).all()
+    
+    settings = get_settings()
+    return render_template('research.html', projects=projects, departments=settings['departments'], college_info=settings)
+
 @app.route('/gallery')
 def gallery():
     cat_filter = request.args.get('category')
@@ -485,6 +509,39 @@ def gallery():
         images = Gallery.query.order_by(Gallery.id.desc()).all()
     
     return render_template('gallery.html', images=images, college_info=get_settings())
+@app.route('/api/events/register', methods=['POST'])
+def register_event():
+    data = request.json
+    event_id = data.get('event_id')
+    
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Please login to register.'}), 401
+        
+    # Check if already registered
+    existing = EventRegistration.query.filter_by(event_id=event_id, phone_number=session.get('phone')).first()
+    if existing:
+        return jsonify({'success': False, 'message': 'You are already registered for this event.'})
+        
+    import uuid
+    ticket_code = str(uuid.uuid4())[:8].upper()
+    
+    registration = EventRegistration(
+        event_id=event_id,
+        student_name=session.get('fullname'),
+        phone_number=session.get('phone'),
+        ticket_code=ticket_code
+    )
+    
+    db.session.add(registration)
+    db.session.commit()
+    
+    return jsonify({
+        'success': True, 
+        'message': 'Registration successful!',
+        'ticket_code': ticket_code
+    })
+
+@app.route('/faculty')
 def faculty():
     faculties = Faculty.query.order_by(Faculty.department).all()
     return render_template('faculty.html', faculties=faculties, college_info=get_settings())

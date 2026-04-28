@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4">Research & Innovation Hub</h2>
+            <p class="text-lg text-slate-500 dark:text-slate-400">Discover our groundbreaking research initiatives and academic contributions to the global community.</p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12" data-aos="fade-up">
+            <a href="{{ url_for('research_hub') }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if not request.args.get('department') else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">All Departments</a>
+            {% for dept in departments %}
+            <a href="{{ url_for('research_hub', department=dept) }}" class="px-6 py-2 rounded-full text-sm font-bold transition-all {{ 'bg-indigo-600 text-white shadow-lg' if request.args.get('department') == dept else 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-indigo-600' }}">{{ dept }}</a>
+            {% endfor %}
+        </div>
+
+        <!-- Research Projects Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for project in projects %}
+            <div class="glass-card p-8 group relative overflow-hidden" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <!-- Status Badge -->
+                <div class="absolute top-6 right-6">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest {{ 'bg-green-100 text-green-700' if project.status == 'completed' else 'bg-blue-100 text-blue-700' }}">
+                        {{ project.status }}
+                    </span>
+                </div>
+
+                <div class="mb-6">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 mb-4">
+                        <i class="fas fa-microscope text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors">{{ project.title }}</h3>
+                    <p class="text-sm font-bold text-indigo-600 uppercase tracking-widest">{{ project.department }}</p>
+                </div>
+
+                <p class="text-slate-600 dark:text-slate-400 mb-6 line-clamp-3 leading-relaxed">
+                    {{ project.description }}
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Lead Faculty</p>
+                        <p class="text-sm font-bold text-slate-700 dark:text-slate-300">{{ project.lead_faculty }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Funding</p>
+                        <p class="text-sm font-bold text-slate-700 dark:text-slate-300 capitalize">{{ project.funding_status }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <button class="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center">
+                        View Project Details <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full py-20 text-center glass-card">
+                <i class="fas fa-atom text-6xl text-slate-200 mb-4"></i>
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white">No research projects found</h3>
+                <p class="text-slate-500">Check back later for new updates from our research teams.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Research Stats Section -->
+        <div class="mt-32 grid grid-cols-1 md:grid-cols-4 gap-8" data-aos="fade-up">
+            <div class="text-center">
+                <p class="text-4xl font-black text-indigo-600 mb-2">50+</p>
+                <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Active Projects</p>
+            </div>
+            <div class="text-center">
+                <p class="text-4xl font-black text-indigo-600 mb-2">200+</p>
+                <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Publications</p>
+            </div>
+            <div class="text-center">
+                <p class="text-4xl font-black text-indigo-600 mb-2">₹5Cr+</p>
+                <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Research Grants</p>
+            </div>
+            <div class="text-center">
+                <p class="text-4xl font-black text-indigo-600 mb-2">15</p>
+                <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Patents Filed</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
