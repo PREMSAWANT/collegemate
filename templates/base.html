@@ -171,8 +171,6 @@
     </style>
 </head>
 <body class="h-full lovable-gradient text-slate-900 dark:text-slate-100 transition-colors duration-300">
-    <!-- Preloader -->
-
     <div class="min-h-full flex flex-col">
         <!-- Navigation -->
         <nav class="glass sticky top-0 z-50 transition-all duration-300">
@@ -219,7 +217,7 @@
                                 <button class="flex items-center max-w-xs rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform hover:scale-105">
                                     <span class="sr-only">Open user menu</span>
                                     <div class="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
-                                        {{ session.get('username')[0].upper() }}
+                                        {{ session.get('username', 'U')[0].upper() }}
                                     </div>
                                 </button>
                                 <div class="hidden group-hover:block absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-1 bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 transform transition-all duration-200 origin-top-right">
@@ -315,8 +313,6 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-
-
         AOS.init({
             duration: 800,
             once: true,
