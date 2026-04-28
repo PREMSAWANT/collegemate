@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 dark:bg-slate-900 py-20 px-4 flex items-center justify-center transition-colors duration-300">
+    <div class="max-w-md w-full" data-aos="flip-up">
+        <!-- Virtual ID Card -->
+        <div class="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden border-8 border-white dark:border-slate-800">
+            <!-- Header Decor -->
+            <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-indigo-600 to-purple-600 -skew-y-6 transform -translate-y-12"></div>
+            
+            <!-- Content -->
+            <div class="relative z-10 p-8 pt-12">
+                <div class="text-center mb-8">
+                    <img src="/static/images/logo.png" class="h-10 mx-auto mb-2 filter brightness-0 invert dark:brightness-100 dark:invert-0" alt="Logo">
+                    <p class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Student Identity Card</p>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-slate-700 mb-6 bg-slate-200">
+                        <img src="https://ui-avatars.com/api/?name={{ session.get('fullname') }}&background=6366f1&color=fff&size=256" alt="Profile" class="w-full h-full object-cover">
+                    </div>
+
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ session.get('fullname') }}</h3>
+                    <p class="text-indigo-600 font-bold text-sm mb-8">Roll No: {{ student.id if student else 'Pending' }}</p>
+
+                    <div class="w-full grid grid-cols-2 gap-y-6 text-left border-t border-slate-100 dark:border-slate-700 pt-8">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Department</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ student.department or session.get('department', 'N/A') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Batch</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ admission.batch_year if admission else '2024-25' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Blood Group</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200">B+</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Validity</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200">June 2028</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 flex justify-center space-x-4 w-full">
+                        <div class="bg-slate-100 dark:bg-slate-900/50 p-3 rounded-xl">
+                            <i class="fas fa-qrcode text-4xl text-slate-800 dark:text-slate-200"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Footer -->
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 text-center border-t border-slate-100 dark:border-slate-700">
+                <p class="text-[8px] text-slate-400 font-medium">This is a digitally generated identity card. Scan the QR code for verification.</p>
+            </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-2 gap-4">
+            <button onclick="window.print()" class="py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-white font-bold rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-105 transition-all">
+                <i class="fas fa-print mr-2"></i> Print PDF
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all text-center">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, footer, button, .mt-8 { display: none !important; }
+    body { background: white !important; }
+    .min-h-screen { py: 0; }
+}
+</style>
+{% endblock %}

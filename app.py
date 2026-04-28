@@ -947,5 +947,19 @@ def admin_analytics():
         'topics': []
     })
 
+@app.route('/student-id')
+def student_id_card():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    user_id = session['user_id']
+    student = StudentDetails.query.filter_by(user_id=user_id).first()
+    admission = Admission.query.filter_by(user_id=user_id).first()
+    
+    return render_template('student_id.html', 
+                         student=student, 
+                         admission=admission,
+                         college_info=get_settings())
+
 if __name__ == '__main__':
     app.run(debug=True)
