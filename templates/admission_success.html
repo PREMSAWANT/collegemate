@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-20 px-4 transition-colors duration-300">
+    <div class="max-w-2xl w-full text-center">
+        <div class="glass-card p-12 shadow-2xl relative overflow-hidden" data-aos="zoom-in">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-green-500/10 rounded-full"></div>
+            
+            <div class="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                <i class="fas fa-check-circle text-5xl text-green-600 dark:text-green-400"></i>
+            </div>
+            
+            <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">Application Submitted!</h2>
+            <p class="text-lg text-slate-500 dark:text-slate-400 mb-8">
+                Your application (ID: <span class="font-bold text-indigo-600">#{{ admission_id }}</span>) has been received and is currently under review by our admission team.
+            </p>
+
+            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-3xl border border-indigo-100 dark:border-indigo-800 text-left mb-8 relative">
+                <div class="absolute top-4 right-4 text-indigo-200 dark:text-indigo-800 text-6xl opacity-30">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h4 class="text-indigo-900 dark:text-indigo-200 font-bold mb-3 flex items-center">
+                    <i class="fas fa-sparkles mr-2"></i> Mia's AI Prediction
+                </h4>
+                <p class="text-indigo-800 dark:text-indigo-300 leading-relaxed italic">
+                    "{{ prediction }}"
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="{{ url_for('home') }}" class="w-full py-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-white font-bold rounded-2xl hover:bg-slate-300 transition-all">
+                    Return Home
+                </a>
+                <a href="{{ url_for('chat_page') }}" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all">
+                    Chat with Mia
+                </a>
+            </div>
+        </div>
+        
+        <p class="mt-8 text-slate-400 text-sm">
+            A confirmation email has been sent to your registered address. For any queries, call {{ college_info.phone }}.
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -36,10 +36,21 @@ class Admission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_name = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(20), db.ForeignKey('student_details.phone_number'), nullable=False)
+    email = db.Column(db.String(120))
+    gender = db.Column(db.String(20))
+    dob = db.Column(db.String(20))
+    address = db.Column(db.Text)
+    
     course_name = db.Column(db.String(100), nullable=False)
     batch_year = db.Column(db.String(20), nullable=False)
+    
+    tenth_percent = db.Column(db.Float)
+    twelfth_percent = db.Column(db.Float)
+    entrance_score = db.Column(db.Float)
+    
+    document_url = db.Column(db.String(200)) # Path to uploaded marksheet/ID
     total_amount = db.Column(db.Float, nullable=False)
-    admission_status = db.Column(db.String(20), default='applied')
+    admission_status = db.Column(db.String(20), default='applied') # applied, pending_docs, under_review, approved, rejected
     application_date = db.Column(db.String(50), nullable=False)
 
 class Conversation(db.Model):
@@ -106,3 +117,58 @@ class UserInteraction(db.Model):
     ai_response = db.Column(db.Text)
     extracted_info = db.Column(db.Text)
     interaction_type = db.Column(db.String(50))
+
+class Setting(db.Model):
+    __tablename__ = 'settings'
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(50), unique=True, nullable=False)
+    value = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50)) # e.g., 'college_info', 'ui_settings'
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Faculty(db.Model):
+    __tablename__ = 'faculty'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    designation = db.Column(db.String(100), nullable=False)
+    department = db.Column(db.String(100), nullable=False)
+    expertise = db.Column(db.String(200))
+    email = db.Column(db.String(120), unique=True)
+    image_url = db.Column(db.String(200))
+    bio = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Event(db.Model):
+    __tablename__ = 'events'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    event_date = db.Column(db.DateTime, nullable=False)
+    location = db.Column(db.String(100))
+    category = db.Column(db.String(50)) # workshop, seminar, sports, culture
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Grievance(db.Model):
+    __tablename__ = 'grievances'
+    id = db.Column(db.Integer, primary_key=True)
+    student_name = db.Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120))
+    category = db.Column(db.String(50), nullable=False) # academic, hostel, transport, fees, other
+    subject = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='pending') # pending, in_progress, resolved, closed
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Alumni(db.Model):
+    __tablename__ = 'alumni'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    batch = db.Column(db.String(20), nullable=False)
+    company = db.Column(db.String(100))
+    position = db.Column(db.String(100))
+    testimonial = db.Column(db.Text)
+    image_url = db.Column(db.String(200))
+    linkedin_url = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

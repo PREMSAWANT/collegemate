@@ -42,12 +42,26 @@
 
         <!-- Input Area -->
         <div class="p-5 bg-white border-t border-slate-200 shadow-lg">
+            <!-- Image Preview -->
+            <div id="image-preview-container" class="hidden mb-3 p-2 bg-slate-50 rounded-xl flex items-center space-x-3 border border-slate-200 animate-fade-in">
+                <div class="relative">
+                    <img id="image-preview" src="" class="h-16 w-16 object-cover rounded-lg shadow-sm border border-white">
+                    <button type="button" id="remove-image" class="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="text-sm text-slate-500 italic">Image attached</div>
+            </div>
             <form id="chat-form" class="flex items-center space-x-3">
                 <button type="button" id="voice-btn" class="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all rounded-full">
                     <i class="fas fa-microphone text-xl"></i>
                 </button>
                 <div class="flex-grow relative">
                     <input type="text" id="user-input" class="w-full border-2 border-slate-200 rounded-full px-6 py-3 pr-12 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all shadow-sm" placeholder="Type your message..." autocomplete="off">
+                    <button type="button" id="image-btn" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-all">
+                        <i class="fas fa-image text-xl"></i>
+                    </button>
+                    <input type="file" id="image-input" class="hidden" accept="image/*">
                 </div>
                 <button type="submit" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-3 rounded-full hover:shadow-lg hover:scale-105 transition-all w-12 h-12 flex items-center justify-center">
                     <i class="fas fa-paper-plane"></i>
@@ -210,17 +224,47 @@
     const userInput = document.getElementById('user-input');
     const voiceBtn = document.getElementById('voice-btn');
     const clearBtn = document.getElementById('clear-chat');
+    const personalitySelect = document.getElementById('personality-select');
+    const imageBtn = document.getElementById('image-btn');
+    const imageInput = document.getElementById('image-input');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const removeImageBtn = document.getElementById('remove-image');
     
     let conversationHistory = [];
     let phoneNumber = "{{ session.get('phone', '') }}";
+    let selectedImage = null;
 
-    function appendMessage(role, text) {
+    // Image Upload Handlers
+    imageBtn.addEventListener('click', () => imageInput.click());
+
+    imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            selectedImage = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreviewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    removeImageBtn.addEventListener('click', () => {
+        selectedImage = null;
+        imageInput.value = '';
+        imagePreviewContainer.classList.add('hidden');
+    });
+
+    function appendMessage(role, text, imageSrc = null) {
         const div = document.createElement('div');
         div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`;
         
         if (role === 'user') {
             div.innerHTML = `
                 <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-lg max-w-[85%]">
+                    ${imageSrc ? `<img src="${imageSrc}" class="rounded-lg mb-2 max-h-48 w-full object-cover border border-white/20">` : ''}
                     <p class="leading-relaxed">${escapeHtml(text)}</p>
                 </div>
             `;
@@ -277,27 +321,35 @@
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const message = userInput.value.trim();
-        if (!message) return;
+        if (!message && !selectedImage) return;
 
         // Add user message
-        appendMessage('user', message);
-        userInput.value = '';
+        const currentImage = selectedImage;
+        const currentImageSrc = currentImage ? imagePreview.src : null;
+        appendMessage('user', message, currentImageSrc);
         
-        // Add to history
+        userInput.value = '';
+        removeImageBtn.click(); // Clear preview
+        
+        // Add to history (only text for now in history, simplified)
         conversationHistory.push({ role: 'user', content: message });
         
         // Show typing
         showTypingIndicator();
 
         try {
+            const formData = new FormData();
+            formData.append('message', message);
+            formData.append('conversation_history', JSON.stringify(conversationHistory));
+            formData.append('phone_number', phoneNumber);
+            formData.append('personality', personalitySelect.value);
+            if (currentImage) {
+                formData.append('image', currentImage);
+            }
+
             const response = await fetch('/api/chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: message,
-                    conversation_history: conversationHistory,
-                    phone_number: phoneNumber
-                })
+                body: formData // Browser sets correct Content-Type for FormData
             });
 
             const data = await response.json();

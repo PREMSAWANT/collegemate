@@ -1,7 +1,7 @@
-﻿from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
+from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction
+from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni
 # Try to import Gemini, but make it optional
 try:
     import google.generativeai as genai
@@ -26,6 +26,8 @@ import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
+import PIL.Image
+import io
 
 # Load environment variables
 load_dotenv()
@@ -98,6 +100,26 @@ COLLEGE_INFO = {
 }
 
 # --- Helper Functions ---
+
+def get_settings():
+    """Load settings from database and merge with default COLLEGE_INFO"""
+    try:
+        db_settings = Setting.query.all()
+        settings_dict = {}
+        for s in db_settings:
+            try:
+                # Try to parse JSON if possible (for nested dicts like 'courses')
+                settings_dict[s.key] = json.loads(s.value)
+            except:
+                settings_dict[s.key] = s.value
+        
+        # Merge with defaults
+        merged_info = COLLEGE_INFO.copy()
+        merged_info.update(settings_dict)
+        return merged_info
+    except Exception as e:
+        print(f"Error loading settings: {str(e)}")
+        return COLLEGE_INFO
 
 def get_gemini_model():
     """Get Gemini model instance"""
@@ -188,52 +210,64 @@ def update_client_details(phone_number, info_dict):
         db.session.rollback()
         return None
 
-def process_admission(info_dict, phone_number):
-    """Process admission information and save to database"""
+def get_eligibility_prediction(info_dict):
+    """Use Gemini to predict admission eligibility based on scores"""
     try:
-        # Get course details
-        course_name = info_dict.get('course', '').lower()
+        if not GEMINI_AVAILABLE or not GEMINI_API_KEY:
+            return "Unable to predict eligibility at this time."
+            
+        settings = get_settings()
+        course_name = info_dict.get('course_name', 'General')
         
-        # Simple mapping if exact match not found
+        prompt = f"""
+        As an admission counselor at {settings['short_name']}, evaluate this student's eligibility for {course_name}:
+        - 10th Score: {info_dict.get('tenth_percent')}%
+        - 12th Score: {info_dict.get('twelfth_percent')}%
+        - Entrance Exam Score: {info_dict.get('entrance_score')}
+        
+        Provide a brief (2-3 sentence) encouraging response about their chances and what they should do next.
+        """
+        
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Error predicting eligibility: {str(e)}")
+        return "Your application is being processed. We will contact you soon."
+
+def process_admission(info_dict, phone_number):
+    """Process admission information and save to database (Enhanced)"""
+    try:
+        settings = get_settings()
+        course_id = info_dict.get('course_name', '').lower()
+        
         found_course = None
-        for key, val in COLLEGE_INFO['courses'].items():
-            if key in course_name or val['name'].lower() in course_name:
+        for key, val in settings['courses'].items():
+            if key == course_id or val['name'].lower() == course_id.lower():
                 found_course = key
                 break
         
         if not found_course:
-            return {
-                "success": False, 
-                "message": f"We don't offer a course named {course_name}. Available courses are: {', '.join([c['name'] for c in COLLEGE_INFO['courses'].values()])}"
-            }
+            return {"success": False, "message": "Invalid course selected."}
             
-        course_details = COLLEGE_INFO['courses'][found_course]
-        
-        # Get batch year (current or next year)
+        course_details = settings['courses'][found_course]
         current_year = datetime.now().year
         batch_year = info_dict.get('batch_year', str(current_year))
-            
-        # Check if student already has an application
-        existing = Admission.query.filter_by(phone_number=phone_number, course_name=found_course, batch_year=batch_year).first()
         
-        if existing:
-            return {
-                "success": False, 
-                "message": f"You already have an application for {course_details['name']} for batch {batch_year}. Your application ID is {existing.id}."
-            }
-        
-        # Get student name
-        student = StudentDetails.query.filter_by(phone_number=phone_number).first()
-        student_name = student.student_name if student else "Unknown"
-        
-        # Insert admission record
         admission = Admission(
-            student_name=student_name,
+            student_name=info_dict.get('student_name', 'Unknown'),
             phone_number=phone_number,
+            email=info_dict.get('email'),
+            gender=info_dict.get('gender'),
+            dob=info_dict.get('dob'),
+            address=info_dict.get('address'),
             course_name=found_course,
             batch_year=batch_year,
+            tenth_percent=float(info_dict.get('tenth_percent', 0)),
+            twelfth_percent=float(info_dict.get('twelfth_percent', 0)),
+            entrance_score=float(info_dict.get('entrance_score', 0)),
             total_amount=course_details['fee'],
-            admission_status='applied',
+            admission_status='under_review',
             application_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         )
         db.session.add(admission)
@@ -241,23 +275,19 @@ def process_admission(info_dict, phone_number):
         
         return {
             "success": True,
-            "message": f"Application for {course_details['name']} has been submitted successfully. Your application ID is {admission.id}.",
-            "admission_id": admission.id,
-            "course": course_details['name'],
-            "fee": course_details['fee'],
-            "batch_year": batch_year
+            "message": f"Application for {course_details['name']} submitted successfully!",
+            "admission_id": admission.id
         }
-        
     except Exception as e:
         print(f"Error processing admission: {str(e)}")
         db.session.rollback()
-        return {"success": False, "message": "An error occurred while processing your admission application."}
+        return {"success": False, "message": "An error occurred."}
 
-def get_ai_response(message, conversation_history):
-    """Get response from Gemini API"""
+def get_ai_response(message, conversation_history, image_data=None, personality='friendly'):
+    """Get response from Gemini API, supporting text, images, and personality profiles"""
     try:
-        if not message:
-            return "I didn't receive any message. Could you please try again?"
+        if not message and not image_data:
+            return "I didn't receive any message or image. Could you please try again?"
         
         if not GEMINI_AVAILABLE:
             return "I'm sorry, the AI chat feature is currently unavailable. The required package (google-generativeai) is not installed. Please contact the administrator."
@@ -265,37 +295,43 @@ def get_ai_response(message, conversation_history):
         if not GEMINI_API_KEY:
             return "I'm sorry, the AI chat feature is not configured. Please contact the administrator."
             
-        # Prepare system message
+        settings = get_settings()
         course_lines = []
-        for key, course in COLLEGE_INFO['courses'].items():
+        for key, course in settings['courses'].items():
             course_lines.append(f"- {course['name']}: {course['seats']} seats, ₹{course['fee']} per year, {course['duration']} years")
             
-        system_instruction = f"""You are Mia, a friendly and helpful AI college assistant at {COLLEGE_INFO['name']} (also known as {COLLEGE_INFO['short_name']}).
-
-Your personality: You are warm, friendly, and conversational. You speak like a helpful human assistant would.
-
-College Information:
-- Full Name: {COLLEGE_INFO['name']}
-- Short Name: {COLLEGE_INFO['short_name']}
-- Address: {COLLEGE_INFO['address']}
-- Phone: {COLLEGE_INFO['phone']}
-
-Available Courses:
-""" + "\n".join(course_lines) + f"""
-
-Departments:
-- {', '.join(COLLEGE_INFO['departments'])}
-
-Campus Facilities:
-- {', '.join([facility['name'] for facility in COLLEGE_INFO['facilities']])}
-
-For admission inquiries, collect the student's name, phone number, course of interest, and any specific questions they have.
-Always ask for the student's phone number as it helps us keep track of their inquiries.
-
-IMPORTANT: Format your responses in a conversational way. Use complete sentences and paragraphs. NEVER use numbered lists or bullet points.
-"""
+        personality_prompts = {
+            'friendly': "You are Mia, a warm, friendly, and conversational AI assistant. You speak like a helpful human friend. Use emojis occasionally.",
+            'formal': "You are Mia, a highly professional and efficient college administrator AI. Use formal language, clear structure, and be very precise.",
+            'creative': "You are Mia, an enthusiastic and inspiring student ambassador. You are very energetic, use modern slang occasionally, and focus on the exciting campus life."
+        }
         
-        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
+        system_instruction = f"""{personality_prompts.get(personality, personality_prompts['friendly'])}
+ 
+ You work at {settings['name']} (also known as {settings['short_name']}).
+ 
+ College Information:
+ - Full Name: {settings['name']}
+ - Short Name: {settings['short_name']}
+ - Address: {settings['address']}
+ - Phone: {settings['phone']}
+ 
+ Available Courses:
+ """ + "\n".join(course_lines) + f"""
+ 
+ Departments:
+ - {', '.join(settings['departments'])}
+ 
+ Campus Facilities:
+ - {', '.join([facility['name'] for facility in settings['facilities']])}
+ 
+ For admission inquiries, guide them to the online Admission Wizard at /admission/apply.
+ Always ask for the student's phone number as it helps us keep track of their inquiries.
+ 
+ IMPORTANT: Format your responses in a conversational way. Use complete sentences and paragraphs. NEVER use numbered lists or bullet points.
+ """
+        
+        model = genai.GenerativeModel('gemini-1.5-flash', system_instruction=system_instruction)
         
         # Convert history to Gemini format
         chat_history = []
@@ -305,8 +341,17 @@ IMPORTANT: Format your responses in a conversational way. Use complete sentences
             elif entry.get('role') == 'assistant':
                 chat_history.append({'role': 'model', 'parts': [entry.get('content')]})
         
+        # Prepare parts
+        parts = []
+        if message:
+            parts.append(message)
+        
+        if image_data:
+            img = PIL.Image.open(io.BytesIO(image_data))
+            parts.append(img)
+            
         chat = model.start_chat(history=chat_history)
-        response = chat.send_message(message)
+        response = chat.send_message(parts)
         
         return response.text
     except Exception as e:
@@ -365,19 +410,25 @@ def clean_text_for_speech(text):
 
 @app.route('/')
 def home():
-    return render_template('index.html', college_info=COLLEGE_INFO)
+    alumni_list = Alumni.query.all()
+    return render_template('index.html', college_info=get_settings(), alumni=alumni_list)
 
 @app.route('/about')
 def about():
-    return render_template('about.html', college_info=COLLEGE_INFO)
+    return render_template('about.html', college_info=get_settings())
 
 @app.route('/courses')
 def courses():
-    return render_template('courses.html', college_info=COLLEGE_INFO)
+    return render_template('courses.html', college_info=get_settings())
 
 @app.route('/facilities')
 def facilities():
-    return render_template('facilities.html', college_info=COLLEGE_INFO)
+    return render_template('facilities.html', college_info=get_settings())
+
+@app.route('/faculty')
+def faculty():
+    faculties = Faculty.query.order_by(Faculty.department).all()
+    return render_template('faculty.html', faculties=faculties, college_info=get_settings())
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -399,24 +450,78 @@ def contact():
             
         return redirect(url_for('contact'))
         
-    return render_template('contact.html', college_info=COLLEGE_INFO)
+    return render_template('contact.html', college_info=get_settings())
 
-@app.route('/chat')
-def chat_page():
+@app.route('/support', methods=['GET', 'POST'])
+def support():
+    if request.method == 'POST':
+        try:
+            new_grievance = Grievance(
+                student_name=request.form.get('name'),
+                phone_number=request.form.get('phone'),
+                email=request.form.get('email'),
+                category=request.form.get('category'),
+                subject=request.form.get('subject'),
+                description=request.form.get('description')
+            )
+            db.session.add(new_grievance)
+            db.session.commit()
+            flash('Your support request has been submitted. Ticket ID: #' + str(new_grievance.id), 'success')
+            return redirect(url_for('support'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error submitting request: ' + str(e), 'error')
+            
+    return render_template('support.html', college_info=get_settings())
+
+@app.route('/admission/apply', methods=['GET', 'POST'])
+def admission_apply():
     if 'user_id' not in session:
+        flash('Please login to apply for admission.', 'info')
         return redirect(url_for('login'))
-    return render_template('chat.html', college_info=COLLEGE_INFO)
+        
+    settings = get_settings()
+    
+    if request.method == 'POST':
+        # Simple implementation for now (can be expanded to handle multi-step)
+        info_dict = request.form.to_dict()
+        res = process_admission(info_dict, session.get('phone'))
+        
+        if res['success']:
+            prediction = get_eligibility_prediction(info_dict)
+            flash(res['message'], 'success')
+            return render_template('admission_success.html', 
+                                 admission_id=res['admission_id'],
+                                 prediction=prediction,
+                                 college_info=settings)
+        else:
+            flash(res['message'], 'error')
+            
+    return render_template('admission_wizard.html', college_info=settings)
 
 @app.route('/api/chat', methods=['POST'])
 def chat_api():
     try:
-        data = request.json
-        user_message = data.get('message', '')
-        conversation_history = data.get('conversation_history', [])
-        phone_number = data.get('phone_number') or session.get('phone')
+        # Handle both JSON and Multipart data
+        if request.is_json:
+            data = request.json
+            user_message = data.get('message', '')
+            conversation_history = data.get('conversation_history', [])
+            phone_number = data.get('phone_number') or session.get('phone')
+            personality = data.get('personality', 'friendly')
+            image_data = None
+        else:
+            user_message = request.form.get('message', '')
+            conversation_history_str = request.form.get('conversation_history', '[]')
+            conversation_history = json.loads(conversation_history_str)
+            phone_number = request.form.get('phone_number') or session.get('phone')
+            personality = request.form.get('personality', 'friendly')
+            
+            image_file = request.files.get('image')
+            image_data = image_file.read() if image_file else None
         
         # Get AI response
-        ai_response = get_ai_response(user_message, conversation_history)
+        ai_response = get_ai_response(user_message, conversation_history, image_data, personality)
         
         # Save conversation
         if phone_number:
@@ -434,7 +539,7 @@ def chat_api():
         
         return jsonify({
             'text': ai_response,
-            'audio_url': None # TTS disabled for Vercel compatibility for now
+            'audio_url': None 
         })
     except Exception as e:
         print(f"Error in chat_api: {str(e)}")
@@ -454,23 +559,23 @@ def register():
         year = request.form.get('year')
         
         if username == ADMIN_USERNAME:
-            return render_template('register.html', error="Username reserved.", college_info=COLLEGE_INFO)
+            return render_template('register.html', error="Username reserved.", college_info=get_settings())
         
         if password != confirm_password:
-            return render_template('register.html', error="Passwords do not match", college_info=COLLEGE_INFO)
+            return render_template('register.html', error="Passwords do not match", college_info=get_settings())
         
         # Check for existing username, email, or phone
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
-            return render_template('register.html', error=f"Username '{username}' is already taken. Please choose another.", college_info=COLLEGE_INFO)
+            return render_template('register.html', error=f"Username '{username}' is already taken. Please choose another.", college_info=get_settings())
         
         existing_email = User.query.filter_by(email=email).first()
         if existing_email:
-            return render_template('register.html', error=f"Email '{email}' is already registered. Please use a different email or login.", college_info=COLLEGE_INFO)
+            return render_template('register.html', error=f"Email '{email}' is already registered. Please use a different email or login.", college_info=get_settings())
         
         existing_phone = User.query.filter_by(phone=phone).first()
         if existing_phone:
-            return render_template('register.html', error=f"Phone number '{phone}' is already registered. Please use a different number.", college_info=COLLEGE_INFO)
+            return render_template('register.html', error=f"Phone number '{phone}' is already registered. Please use a different number.", college_info=get_settings())
         
         try:
             password_hash = generate_password_hash(password)
@@ -499,9 +604,9 @@ def register():
         except Exception as e:
             db.session.rollback()
             print(f"Registration error: {str(e)}")
-            return render_template('register.html', error="An error occurred during registration. Please try again.", college_info=COLLEGE_INFO)
+            return render_template('register.html', error="An error occurred during registration. Please try again.", college_info=get_settings())
     
-    return render_template('register.html', college_info=COLLEGE_INFO)
+    return render_template('register.html', college_info=get_settings())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -509,11 +614,21 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-            session['user_id'] = 0
-            session['username'] = username
-            session['user_type'] = 'admin'
-            return redirect(url_for('admin_dashboard'))
+        if username == ADMIN_USERNAME:
+            # Check if admin user exists in DB, otherwise use default
+            user = User.query.filter_by(username=username, user_type='admin').first()
+            if user:
+                if check_password_hash(user.password_hash, password):
+                    session['user_id'] = user.id
+                    session['username'] = user.username
+                    session['user_type'] = 'admin'
+                    return redirect(url_for('admin_dashboard'))
+            elif password == ADMIN_PASSWORD:
+                # Fallback for first-time setup (should be removed after first admin creation)
+                session['user_id'] = 0
+                session['username'] = username
+                session['user_type'] = 'admin'
+                return redirect(url_for('admin_dashboard'))
         
         user = User.query.filter_by(username=username).first()
         
@@ -526,9 +641,9 @@ def login():
             session['user_type'] = user.user_type
             return redirect(url_for('chat_page'))
         
-        return render_template('login.html', error="Invalid credentials", college_info=COLLEGE_INFO)
+        return render_template('login.html', error="Invalid credentials", college_info=get_settings())
     
-    return render_template('login.html', college_info=COLLEGE_INFO)
+    return render_template('login.html', college_info=get_settings())
 
 @app.route('/logout')
 def logout():
@@ -538,7 +653,57 @@ def logout():
 @app.route('/admin/dashboard')
 @admin_required
 def admin_dashboard():
-    return render_template('admin.html', college_info=COLLEGE_INFO)
+    return render_template('admin.html', college_info=get_settings())
+
+@app.route('/admin/settings', methods=['GET', 'POST'])
+@admin_required
+def admin_settings():
+    if request.method == 'POST':
+        try:
+            # Update basic info
+            basic_keys = ['name', 'short_name', 'address', 'phone', 'email']
+            for key in basic_keys:
+                if key in request.form:
+                    setting = Setting.query.filter_by(key=key).first()
+                    if setting:
+                        setting.value = request.form[key]
+                    else:
+                        new_setting = Setting(key=key, value=request.form[key], category='college_info')
+                        db.session.add(new_setting)
+            
+            # Update JSON info
+            json_keys = ['courses', 'facilities', 'announcements']
+            for key in json_keys:
+                if key in request.form:
+                    # Validate JSON before saving
+                    json_val = request.form[key]
+                    json.loads(json_val) # Will raise ValueError if invalid
+                    
+                    setting = Setting.query.filter_by(key=key).first()
+                    if setting:
+                        setting.value = json_val
+                    else:
+                        new_setting = Setting(key=key, value=json_val, category='college_info')
+                        db.session.add(new_setting)
+            
+            db.session.commit()
+            flash('Settings updated successfully!', 'success')
+        except ValueError as e:
+            flash(f'Invalid JSON format in settings: {str(e)}', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating settings: {str(e)}', 'error')
+        
+        return redirect(url_for('admin_settings'))
+
+    # GET request
+    settings = get_settings()
+    # Add JSON strings for easy editing in textarea
+    settings['courses_json'] = json.dumps(settings['courses'], indent=4)
+    settings['facilities_json'] = json.dumps(settings['facilities'], indent=4)
+    settings['announcements_json'] = json.dumps(settings['announcements'], indent=4)
+    
+    return render_template('admin_settings.html', settings=settings, college_info=settings)
 
 @app.route('/api/admin/stats')
 @admin_required
@@ -565,6 +730,25 @@ def admin_conversations():
         'message_content': c.message_content,
         'timestamp': c.timestamp
     } for c in convs])
+
+@app.route('/api/notifications')
+def get_notifications():
+    # Fetch upcoming events (within next 7 days)
+    now = datetime.utcnow()
+    next_week = now + timedelta(days=7)
+    upcoming_events = Event.query.filter(Event.event_date >= now, Event.event_date <= next_week, Event.is_active == True).all()
+    
+    notifications = []
+    for event in upcoming_events:
+        notifications.append({
+            'id': event.id,
+            'title': event.title,
+            'description': event.description[:100] + '...' if event.description else '',
+            'type': 'event',
+            'date': event.event_date.strftime('%d %b')
+        })
+    
+    return jsonify(notifications)
 
 @app.route('/api/admin/admissions')
 @admin_required

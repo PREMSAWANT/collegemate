@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">System Settings</h2>
+            <p class="text-slate-500 mt-1">Manage dynamic college information and platform behavior.</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="text-indigo-600 font-semibold hover:text-indigo-500">
+            <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="bg-white shadow rounded-2xl overflow-hidden border border-slate-200">
+        <form action="{{ url_for('admin_settings') }}" method="POST" class="divide-y divide-slate-200">
+            <!-- Basic Info -->
+            <div class="p-8">
+                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+                    <i class="fas fa-university mr-2 text-indigo-600"></i> Basic College Info
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Full College Name</label>
+                        <input type="text" name="name" value="{{ settings.name }}" class="w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Short Name / Abbreviation</label>
+                        <input type="text" name="short_name" value="{{ settings.short_name }}" class="w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Address</label>
+                        <input type="text" name="address" value="{{ settings.address }}" class="w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Contact Phone</label>
+                        <input type="text" name="phone" value="{{ settings.phone }}" class="w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Contact Email</label>
+                        <input type="email" name="email" value="{{ settings.email }}" class="w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- JSON Settings (Advanced) -->
+            <div class="p-8 bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-code mr-2 text-purple-600"></i> Advanced Settings (JSON)
+                </h3>
+                <p class="text-sm text-slate-500 mb-6">Modify courses, facilities, and announcements in JSON format. Be careful with the syntax!</p>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Courses Configuration</label>
+                        <textarea name="courses" rows="10" class="w-full font-mono text-sm border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{ settings.courses_json }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Campus Facilities</label>
+                        <textarea name="facilities" rows="8" class="w-full font-mono text-sm border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{ settings.facilities_json }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Latest Announcements</label>
+                        <textarea name="announcements" rows="8" class="w-full font-mono text-sm border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{ settings.announcements_json }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 bg-white flex justify-end">
+                <button type="submit" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all">
+                    Save All Settings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

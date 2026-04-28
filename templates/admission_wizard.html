@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 transition-colors duration-300">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Progress Bar -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between relative">
+                <div class="absolute left-0 top-1/2 w-full h-1 bg-slate-200 dark:bg-slate-700 -translate-y-1/2 z-0"></div>
+                <div id="progress-line" class="absolute left-0 top-1/2 w-0 h-1 bg-indigo-600 -translate-y-1/2 z-0 transition-all duration-500"></div>
+                
+                <div class="step-node relative z-10 flex flex-col items-center group active" data-step="1">
+                    <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border-2 border-indigo-600 flex items-center justify-center text-indigo-600 font-bold transition-all duration-300 shadow-lg">1</div>
+                    <span class="mt-2 text-xs font-bold text-indigo-600 uppercase tracking-wider">Personal</span>
+                </div>
+                <div class="step-node relative z-10 flex flex-col items-center group" data-step="2">
+                    <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 font-bold transition-all duration-300 shadow-sm">2</div>
+                    <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Academic</span>
+                </div>
+                <div class="step-node relative z-10 flex flex-col items-center group" data-step="3">
+                    <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 font-bold transition-all duration-300 shadow-sm">3</div>
+                    <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Course</span>
+                </div>
+                <div class="step-node relative z-10 flex flex-col items-center group" data-step="4">
+                    <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 font-bold transition-all duration-300 shadow-sm">4</div>
+                    <span class="mt-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Review</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-600/5 rounded-bl-full"></div>
+            
+            <form id="admission-form" method="POST" action="{{ url_for('admission_apply') }}" class="relative z-10">
+                <!-- Step 1: Personal Details -->
+                <div class="step-content" id="step-1">
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">Personal Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name (As per LC)</label>
+                            <input type="text" name="student_name" value="{{ session.get('fullname', '') }}" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
+                            <input type="email" name="email" value="{{ session.get('email', '') }}" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Gender</label>
+                            <select name="gender" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Date of Birth</label>
+                            <input type="date" name="dob" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Permanent Address</label>
+                            <textarea name="address" rows="3" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Academic Details -->
+                <div class="step-content hidden" id="step-2">
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">Academic Performance</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">10th Percentage</label>
+                            <input type="number" step="0.01" name="tenth_percent" placeholder="e.g. 85.50" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">12th Percentage</label>
+                            <input type="number" step="0.01" name="twelfth_percent" placeholder="e.g. 82.20" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Entrance Score (CET/JEE)</label>
+                            <input type="number" step="0.01" name="entrance_score" placeholder="e.g. 95.00" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                        </div>
+                    </div>
+                    <div class="mt-10 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800 flex items-start space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-magic text-indigo-600 dark:text-indigo-400"></i>
+                        </div>
+                        <p class="text-sm text-indigo-900 dark:text-indigo-200">
+                            <strong>AI Tip:</strong> Ensure your scores are accurate as per the original documents. Our AI Mia will help the admission team evaluate your profile faster!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Course Selection -->
+                <div class="step-content hidden" id="step-3">
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">Select Your Course</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for key, course in college_info.courses.items() %}
+                        <label class="relative block group cursor-pointer">
+                            <input type="radio" name="course_name" value="{{ key }}" required class="peer absolute opacity-0">
+                            <div class="p-6 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl transition-all group-hover:border-indigo-300 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/30 peer-checked:ring-4 peer-checked:ring-indigo-600/10">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-bold text-lg text-slate-800 dark:text-white">{{ course.name }}</h4>
+                                    <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-600 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 flex items-center justify-center transition-all">
+                                        <i class="fas fa-check text-white text-xs opacity-0 peer-checked:opacity-100"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Duration: {{ course.duration }} Years | Fee: ₹{{ "{:,.0f}".format(course.fee) }}/yr</p>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-8">
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Admission Batch</label>
+                        <select name="batch_year" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all dark:text-white">
+                            <option value="2025-26">2025-26 (Freshman)</option>
+                            <option value="2024-25">2024-25 (Lateral Entry)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review -->
+                <div class="step-content hidden" id="step-4">
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">Review Your Application</h3>
+                    <div id="review-content" class="space-y-6">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 flex items-center space-x-3">
+                        <input type="checkbox" id="declaration" required class="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <label for="declaration" class="text-sm text-slate-600 dark:text-slate-400">I declare that all the information provided above is true to the best of my knowledge.</label>
+                    </div>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="mt-12 pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <button type="button" id="prev-btn" class="hidden px-8 py-4 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white font-bold rounded-2xl hover:bg-slate-300 transition-all">
+                        Previous
+                    </button>
+                    <button type="button" id="next-btn" class="ml-auto px-12 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all">
+                        Next Step
+                    </button>
+                    <button type="submit" id="submit-btn" class="hidden ml-auto px-12 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    const form = document.getElementById('admission-form');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const progressLine = document.getElementById('progress-line');
+    const stepNodes = document.querySelectorAll('.step-node');
+
+    function updateWizard() {
+        // Hide all steps
+        document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden'));
+        // Show current step
+        document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+
+        // Update progress bar
+        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        progressLine.style.width = `${progress}%`;
+
+        // Update nodes
+        stepNodes.forEach(node => {
+            const stepNum = parseInt(node.dataset.step);
+            const circle = node.querySelector('div');
+            const span = node.querySelector('span');
+
+            if (stepNum < currentStep) {
+                circle.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                circle.innerHTML = '<i class="fas fa-check"></i>';
+                span.classList.add('text-indigo-600');
+            } else if (stepNum === currentStep) {
+                circle.classList.add('border-indigo-600', 'text-indigo-600');
+                circle.classList.remove('bg-indigo-600', 'text-white', 'text-slate-400', 'border-slate-200');
+                circle.innerText = stepNum;
+                span.classList.add('text-indigo-600');
+            } else {
+                circle.classList.remove('border-indigo-600', 'text-indigo-600', 'bg-indigo-600', 'text-white');
+                circle.classList.add('border-slate-200', 'text-slate-400');
+                circle.innerText = stepNum;
+                span.classList.remove('text-indigo-600');
+            }
+        });
+
+        // Buttons
+        prevBtn.classList.toggle('hidden', currentStep === 1);
+        if (currentStep === totalSteps) {
+            nextBtn.classList.add('hidden');
+            submitBtn.classList.remove('hidden');
+            generateReview();
+        } else {
+            nextBtn.classList.remove('hidden');
+            submitBtn.classList.add('hidden');
+        }
+    }
+
+    function generateReview() {
+        const formData = new FormData(form);
+        const reviewContainer = document.getElementById('review-content');
+        let html = '<div class="grid grid-cols-2 gap-6 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">';
+        
+        const labels = {
+            'student_name': 'Full Name',
+            'email': 'Email',
+            'gender': 'Gender',
+            'dob': 'Date of Birth',
+            'tenth_percent': '10th %',
+            'twelfth_percent': '12th %',
+            'entrance_score': 'Entrance Score',
+            'course_name': 'Selected Course',
+            'batch_year': 'Admission Batch'
+        };
+
+        for (let [key, value] of formData.entries()) {
+            if (labels[key]) {
+                html += `
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase">${labels[key]}</p>
+                        <p class="text-slate-800 dark:text-white font-medium">${value}</p>
+                    </div>
+                `;
+            }
+        }
+        html += '</div>';
+        reviewContainer.innerHTML = html;
+    }
+
+    nextBtn.addEventListener('click', () => {
+        if (validateStep(currentStep)) {
+            currentStep++;
+            updateWizard();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    prevBtn.addEventListener('click', () => {
+        currentStep--;
+        updateWizard();
+    });
+
+    function validateStep(step) {
+        const currentStepEl = document.getElementById(`step-${step}`);
+        const inputs = currentStepEl.querySelectorAll('input, select, textarea');
+        let valid = true;
+        
+        inputs.forEach(input => {
+            if (input.hasAttribute('required') && !input.value) {
+                input.classList.add('border-red-500');
+                valid = false;
+            } else {
+                input.classList.remove('border-red-500');
+            }
+        });
+
+        if (!valid) {
+            alert('Please fill all required fields before proceeding.');
+        }
+        return valid;
+    }
+
+    // Initial load
+    updateWizard();
+</script>
+{% endblock %}
