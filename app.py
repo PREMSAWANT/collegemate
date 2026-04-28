@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect, make_response, url_for, session, flash
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni
+from models import db, User, StudentDetails, Admission, Conversation, Query, TimeSlot, Meeting, CollegeInfo, Document, UserInteraction, Setting, Faculty, Event, Grievance, Alumni, Resource, FeeStatus
 # Try to import Gemini, but make it optional
 try:
     import google.generativeai as genai
@@ -424,6 +424,36 @@ def courses():
 @app.route('/facilities')
 def facilities():
     return render_template('facilities.html', college_info=get_settings())
+
+@app.route('/resources')
+def resources():
+    dept_filter = request.args.get('department')
+    cat_filter = request.args.get('category')
+    
+    query = Resource.query
+    if dept_filter:
+        query = query.filter_by(department=dept_filter)
+    if cat_filter:
+        query = query.filter_by(category=cat_filter)
+        
+    all_resources = query.order_by(Resource.created_at.desc()).all()
+    settings = get_settings()
+    
+    return render_template('resources.html', 
+                         resources=all_resources, 
+                         departments=settings['departments'],
+                         college_info=settings)
+
+@app.route('/fees')
+def fees():
+    if 'user_id' not in session:
+        flash('Please login to view your fee status.', 'info')
+        return redirect(url_for('login'))
+        
+    fee_data = FeeStatus.query.filter_by(phone_number=session.get('phone')).first()
+    settings = get_settings()
+    
+    return render_template('fees.html', fee_status=fee_data, college_info=settings)
 
 @app.route('/faculty')
 def faculty():

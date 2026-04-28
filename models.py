@@ -172,3 +172,23 @@ class Alumni(db.Model):
     image_url = db.Column(db.String(200))
     linkedin_url = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Resource(db.Model):
+    __tablename__ = 'resources'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50), nullable=False) # e-book, syllabus, question_paper, note
+    department = db.Column(db.String(100), nullable=False)
+    file_url = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class FeeStatus(db.Model):
+    __tablename__ = 'fee_status'
+    id = db.Column(db.Integer, primary_key=True)
+    phone_number = db.Column(db.String(20), db.ForeignKey('student_details.phone_number'), nullable=False)
+    total_fee = db.Column(db.Float, nullable=False)
+    paid_fee = db.Column(db.Float, default=0.0)
+    due_date = db.Column(db.String(20))
+    status = db.Column(db.String(20), default='pending') # pending, partially_paid, paid
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12" data-aos="fade-up">
+            <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4">Digital Resource Library</h2>
+            <p class="text-lg text-slate-500 dark:text-slate-400">Access e-books, previous year question papers, and official syllabus.</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="glass-card p-6 mb-12 flex flex-wrap gap-4 items-center justify-between" data-aos="fade-up">
+            <div class="flex flex-wrap gap-4">
+                <form action="{{ url_for('resources') }}" method="GET" class="flex flex-wrap gap-4">
+                    <select name="department" class="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 dark:text-white">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept }}" {% if request.args.get('department') == dept %}selected{% endif %}>{{ dept }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="category" class="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 dark:text-white">
+                        <option value="">All Categories</option>
+                        <option value="e-book" {% if request.args.get('category') == 'e-book' %}selected{% endif %}>E-Books</option>
+                        <option value="syllabus" {% if request.args.get('category') == 'syllabus' %}selected{% endif %}>Syllabus</option>
+                        <option value="question_paper" {% if request.args.get('category') == 'question_paper' %}selected{% endif %}>Question Papers</option>
+                        <option value="note" {% if request.args.get('category') == 'note' %}selected{% endif %}>Study Notes</option>
+                    </select>
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all">Filter</button>
+                    <a href="{{ url_for('resources') }}" class="text-slate-500 text-sm flex items-center hover:text-slate-700">Clear</a>
+                </form>
+            </div>
+            <p class="text-sm text-slate-500">{{ resources|length }} items found</p>
+        </div>
+
+        <!-- Resource Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for resource in resources %}
+            <div class="glass-card p-6 flex flex-col group" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
+                        {% if resource.category == 'e-book' %}
+                            <i class="fas fa-book text-xl"></i>
+                        {% elif resource.category == 'syllabus' %}
+                            <i class="fas fa-file-alt text-xl"></i>
+                        {% elif resource.category == 'question_paper' %}
+                            <i class="fas fa-file-signature text-xl"></i>
+                        {% else %}
+                            <i class="fas fa-sticky-note text-xl"></i>
+                        {% endif %}
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{{ resource.category|replace('_', ' ') }}</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors">{{ resource.title }}</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 flex-grow">{{ resource.description }}</p>
+                <div class="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
+                    <span class="text-xs font-medium text-slate-400">{{ resource.department }}</span>
+                    <a href="{{ resource.file_url or '#' }}" class="flex items-center text-indigo-600 font-bold text-sm hover:translate-x-1 transition-transform" target="_blank">
+                        Download <i class="fas fa-download ml-2 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="md:col-span-3 text-center py-20 glass-card">
+                <i class="fas fa-folder-open text-6xl text-slate-200 mb-4"></i>
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white">No resources found</h3>
+                <p class="text-slate-500">Try adjusting your filters or check back later.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
